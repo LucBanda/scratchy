@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/luc/scratchy/scratchy/ui/scratchy.ui'
 #
-# Created: Sun Feb  4 19:09:27 2018
+# Created: Sun Feb  4 19:33:48 2018
 #      by: PyQt5 UI code generator 5.3.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -33,6 +33,15 @@ class Ui_MainWindow(object):
         self.actionTourner.setObjectName("actionTourner")
         self.actionBoucle = QtWidgets.QAction(MainWindow)
         self.actionBoucle.setObjectName("actionBoucle")
+        self.actionNouveau = QtWidgets.QAction(MainWindow)
+        self.actionNouveau.setObjectName("actionNouveau")
+        self.actionOuvrir = QtWidgets.QAction(MainWindow)
+        self.actionOuvrir.setObjectName("actionOuvrir")
+        self.actionSauver = QtWidgets.QAction(MainWindow)
+        self.actionSauver.setObjectName("actionSauver")
+        self.menuFichier.addAction(self.actionNouveau)
+        self.menuFichier.addAction(self.actionOuvrir)
+        self.menuFichier.addAction(self.actionSauver)
         self.menuActions.addAction(self.actionAvancer)
         self.menuActions.addAction(self.actionTourner)
         self.menuActions.addAction(self.actionBoucle)
@@ -50,6 +59,9 @@ class Ui_MainWindow(object):
         self.actionAvancer.setText(_translate("MainWindow", "Avancer..."))
         self.actionTourner.setText(_translate("MainWindow", "Tourner..."))
         self.actionBoucle.setText(_translate("MainWindow", "Boucle..."))
+        self.actionNouveau.setText(_translate("MainWindow", "Nouveau"))
+        self.actionOuvrir.setText(_translate("MainWindow", "Ouvrir"))
+        self.actionSauver.setText(_translate("MainWindow", "Sauver"))
 
 
 if __name__ == "__main__":

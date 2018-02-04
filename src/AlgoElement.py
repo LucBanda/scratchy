@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout
 from PyQt5 import QtWidgets
+import json
 
 class AlgorithmWidget(QWidget):
     def __init__(self, parent):
@@ -19,7 +20,7 @@ class AlgorithmWidget(QWidget):
         i = 0
         for progElem in self.algo.instructionList:
             i+=1
-            newButton = QtWidgets.QPushButton(progElem.ActionString, self)
+            newButton = QtWidgets.QPushButton(json.dumps(progElem), self)
             self.formLayout.setWidget(i, QtWidgets.QFormLayout.LabelRole, newButton)
 
     def addAlgoElement(self, algoElement):
@@ -36,24 +37,37 @@ class Algorithm():
     def __init__(self):
         self.instructionList = []
 
-class ProgramElement():
+    def dump(self):
+        return json.dumps(self.instructionList)
+
+def loadAlgorithm(json_str):
+    algorithm = Algorithm()
+    algorithm.instructionList = json.loads(json_str)
+    newInstructionList = []
+    for dict in algorithm.instructionList:
+        instruction = ProgramElement(dict)
+        newInstructionList.append(instruction)
+    algorithm.instructionList = newInstructionList
+    return algorithm
+
+class ProgramElement(dict):
     def __init__(self, dict):
+        dict.__init__(self)
+        for key, val in dict.items():
+            self[key] = val
         self.needsEnd = False
-        self.elementDict = dict
 
 class Move(ProgramElement):
     defaultDistance = 1.0
 
     def __init__(self, targetDistance):
         ProgramElement.__init__(self, {"MOVE":targetDistance})
-        self.ActionString = "Move " + str(self.elementDict["MOVE"]) + " m"
 
 class Turn(ProgramElement):
     defaultRotationAngle = 90
 
     def __init__(self, rotationAngle):
         ProgramElement.__init__(self, {"TURN":rotationAngle})
-        self.ActionString = "Turn " + str(self.elementDict["TURN"]) + "°"
 
 
 class Loop(ProgramElement):
@@ -61,4 +75,3 @@ class Loop(ProgramElement):
 
     def __init__(self, iterations, actions):
         ProgramElement.__init__(self, {"LOOP":(iterations, actions)})
-        self.ActionString = "Repeat " + str(self.elementDict["LOOP"][0])
