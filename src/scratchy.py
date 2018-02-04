@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui, QtWidgets, QtWidgets
-from PyQt5.QtWidgets import (QWidget, QPushButton,
-    QHBoxLayout, QVBoxLayout, QApplication)
-from PyQt5.QtCore import QSize
-from PyQt5.QtCore import Qt
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QVBoxLayout
 import sys
 import libpomp
 
-import ui.UIAlgorithmDialog as UIalgodialog
 import ui.UIscratchy as UIscratchy
 
 import AlgoElement

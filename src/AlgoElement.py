@@ -1,18 +1,26 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout
-import ui.UIAlgorithmWidget
+from PyQt5 import QtWidgets
 
 class AlgorithmWidget(QWidget):
     def __init__(self, parent):
         QWidget.__init__(self, parent)
-        self.ui = ui.UIAlgorithmWidget.Ui_Form()
-        self.ui.setupUi(self)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
+        self.setSizePolicy(sizePolicy)
+        self.formLayout = QtWidgets.QFormLayout(self)
+        self.formLayout.setSizeConstraint(QtWidgets.QLayout.SetNoConstraint)
+        self.formLayout.setFieldGrowthPolicy(QtWidgets.QFormLayout.AllNonFixedFieldsGrow)
         self.algo = Algorithm()
 
     def displayAlgorithm(self):
         self.clear()
+        i = 0
         for progElem in self.algo.instructionList:
-            sampleButton_1 = progElem.getWidget()
-            self.ui.algoLayout.addWidget(sampleButton_1)
+            i+=1
+            newButton = QtWidgets.QPushButton(progElem.ActionString, self)
+            self.formLayout.setWidget(i, QtWidgets.QFormLayout.LabelRole, newButton)
 
     def addAlgoElement(self, algoElement):
         self.algo.instructionList.append(algoElement)
@@ -20,8 +28,9 @@ class AlgorithmWidget(QWidget):
 
     def clear(self):
         #clear layout
-        for i in reversed(range(self.ui.algoLayout.count())):
-            self.ui.algoLayout.itemAt(i).widget().setParent(None)
+        for i in reversed(range(self.formLayout.count())):
+            self.formLayout.itemAt(i).widget().setParent(None)
+
 
 class Algorithm():
     def __init__(self):
@@ -32,26 +41,19 @@ class ProgramElement():
         self.needsEnd = False
         self.elementDict = dict
 
-    def getWidget(self):
-        pass
-
 class Move(ProgramElement):
     defaultDistance = 1.0
 
     def __init__(self, targetDistance):
         ProgramElement.__init__(self, {"MOVE":targetDistance})
-
-    def getWidget(self):
-        return QPushButton("Move " + str(self.elementDict["MOVE"]) + " m")
+        self.ActionString = "Move " + str(self.elementDict["MOVE"]) + " m"
 
 class Turn(ProgramElement):
     defaultRotationAngle = 90
 
     def __init__(self, rotationAngle):
         ProgramElement.__init__(self, {"TURN":rotationAngle})
-
-    def getWidget(self):
-        return QPushButton("Turn " + str(self.elementDict["TURN"]) + "°")
+        self.ActionString = "Turn " + str(self.elementDict["TURN"]) + "°"
 
 
 class Loop(ProgramElement):
@@ -59,6 +61,4 @@ class Loop(ProgramElement):
 
     def __init__(self, iterations, actions):
         ProgramElement.__init__(self, {"LOOP":(iterations, actions)})
-
-    def getWidget(self):
-        return QPushButton("Repeat " + str(self.elementDict["LOOP"][0]))
+        self.ActionString = "Repeat " + str(self.elementDict["LOOP"][0])

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/luc/scratchy/scratchy/ui/scratchy.ui'
 #
-# Created: Sun Feb  4 09:07:43 2018
+# Created: Sun Feb  4 19:09:27 2018
 #      by: PyQt5 UI code generator 5.3.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -16,6 +16,9 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         MainWindow.setCentralWidget(self.centralwidget)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 27))
         self.menubar.setObjectName("menubar")
@@ -24,9 +27,6 @@ class Ui_MainWindow(object):
         self.menuActions = QtWidgets.QMenu(self.menubar)
         self.menuActions.setObjectName("menuActions")
         MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
         self.actionAvancer = QtWidgets.QAction(MainWindow)
         self.actionAvancer.setObjectName("actionAvancer")
         self.actionTourner = QtWidgets.QAction(MainWindow)

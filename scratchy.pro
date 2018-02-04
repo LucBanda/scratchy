@@ -18,9 +18,7 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui \
-    ui/AlgorithmDialog.ui \
     ui/mainwindow.ui \
-    ui/AlgorithmWidget.ui \
     ui/scratchy.ui
 
 OTHER_FILES += \
