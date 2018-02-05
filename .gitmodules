@@ -1,3 +1,4 @@
 [submodule "libpomp"]
 	path = libpomp
 	url = https://github.com/Parrot-Developers/libpomp.git
+	branch = master
