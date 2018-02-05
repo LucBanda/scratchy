@@ -20,7 +20,7 @@ class AlgorithmWidget(QWidget):
         i = 0
         for progElem in self.algo.instructionList:
             i+=1
-            newButton = QtWidgets.QPushButton(json.dumps(progElem), self)
+            newButton = QtWidgets.QPushButton(progElem.ActionString, self)
             self.formLayout.setWidget(i, QtWidgets.QFormLayout.LabelRole, newButton)
 
     def addAlgoElement(self, algoElement):
@@ -38,36 +38,48 @@ class Algorithm():
         self.instructionList = []
 
     def dump(self):
-        return json.dumps(self.instructionList)
+        ret = ""
+        for instruction in self.instructionList:
+            ret = ret + str(instruction) + "\n"
+        return ret
 
-def loadAlgorithm(json_str):
+def loadAlgorithm(file_string):
     algorithm = Algorithm()
-    algorithm.instructionList = json.loads(json_str)
-    newInstructionList = []
-    for dict in algorithm.instructionList:
-        instruction = ProgramElement(dict)
-        newInstructionList.append(instruction)
-    algorithm.instructionList = newInstructionList
+    for line in file_string.split("\n"):
+        if line:
+            inst, val = line.split(":")
+            if inst == "MOVE":
+                algorithm.instructionList.append(Move(val))
+            elif inst == "TURN":
+                algorithm.instructionList.append(Turn(val))
+            elif inst == "LOOP":
+                algorithm.instructionList.append(Loop(val, []))
+            else:
+                print("error unknown instruction " + inst)
     return algorithm
 
-class ProgramElement(dict):
+class ProgramElement():
     def __init__(self, dict):
-        dict.__init__(self)
-        for key, val in dict.items():
-            self[key] = val
         self.needsEnd = False
+        self.elementDict = dict
+
+    def __str__(self):
+        for key, val in self.elementDict.items():
+            return key + ":" + str(val)
 
 class Move(ProgramElement):
     defaultDistance = 1.0
 
     def __init__(self, targetDistance):
         ProgramElement.__init__(self, {"MOVE":targetDistance})
+        self.ActionString = "Move " + str(self.elementDict["MOVE"]) + " m"
 
 class Turn(ProgramElement):
     defaultRotationAngle = 90
 
     def __init__(self, rotationAngle):
         ProgramElement.__init__(self, {"TURN":rotationAngle})
+        self.ActionString = "Turn " + str(self.elementDict["TURN"]) + "°"
 
 
 class Loop(ProgramElement):
@@ -75,3 +87,4 @@ class Loop(ProgramElement):
 
     def __init__(self, iterations, actions):
         ProgramElement.__init__(self, {"LOOP":(iterations, actions)})
+        self.ActionString = "Repeat " + str(self.elementDict["LOOP"][0])
