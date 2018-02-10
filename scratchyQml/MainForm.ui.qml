@@ -6,6 +6,11 @@ Item {
     id: item1
     width: 1024
     height: 800
+    property alias debugTextField: debugTextField
+    property alias loopButton: loopButton
+    property alias turnButton: turnButton
+    property alias moveButton: moveButton
+    property alias algorithmGroupBox: algorithmGroupBox
     property alias actionGroupBox: actionGroupBox
 
     GroupBox {
@@ -47,34 +52,10 @@ Item {
         }
     }
 
-    Text {
-        id: debugTextField
-        width: algorithmGroupBox.width
-        height: 200
-        text: qsTr("Text")
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 0
-        anchors.right: parent.right
-        anchors.rightMargin: 0
-        font.pixelSize: 12
-    }
-
-    GroupBox {
-        id: algorithmGroupBox
-        anchors.left: actionGroupBox.right
-        anchors.leftMargin: 0
-        anchors.bottom: debugTextField.top
-        anchors.bottomMargin: 0
-        anchors.right: parent.right
-        anchors.rightMargin: 0
-        anchors.top: parent.top
-        anchors.topMargin: 0
-        title: qsTr("Algorithme")
-    }
-
     Rectangle {
         id: robotPosition
         color: "#ffffff"
+        border.width: 5
         anchors.right: algorithmGroupBox.left
         anchors.rightMargin: 0
         anchors.top: videoFrame.bottom
@@ -94,5 +75,38 @@ Item {
         anchors.topMargin: 0
         anchors.left: parent.left
         anchors.leftMargin: 0
+    }
+
+    Rectangle {
+        id: algorithmGroupBox
+        color: "#d4d4d4"
+        anchors.left: actionGroupBox.right
+        anchors.leftMargin: 0
+        anchors.bottom: rectangle.top
+        anchors.bottomMargin: 0
+        anchors.top: parent.top
+        anchors.topMargin: 0
+        anchors.right: parent.right
+        anchors.rightMargin: 0
+    }
+
+    Rectangle {
+        id: rectangle
+        y: 622
+        height: 200
+        color: "#ffffff"
+        anchors.left: robotPosition.right
+        anchors.leftMargin: 0
+        anchors.right: parent.right
+        anchors.rightMargin: 0
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 0
+
+        Text {
+            id: debugTextField
+            text: qsTr("Text")
+            anchors.fill: parent
+            font.pixelSize: 12
+        }
     }
 }
