@@ -7,9 +7,6 @@ Item {
     width: 1024
     height: 800
     property alias debugTextField: debugTextField
-    property alias loopButton: loopButton
-    property alias turnButton: turnButton
-    property alias moveButton: moveButton
     property alias algorithmGroupBox: algorithmGroupBox
     property alias actionGroupBox: actionGroupBox
 
@@ -30,25 +27,33 @@ Item {
 
         title: qsTr("Actions")
 
-        Button {
-            id: moveButton
-            x: 4
-            y: 10
-            text: qsTr("Move")
+        ProgramElementUI {
+            id: defaultAvance
+            anchors.left: parent.left
+            anchors.leftMargin: -8
         }
 
-        Button {
-            id: turnButton
-            x: 4
-            y: 44
-            text: qsTr("Turn")
+        ProgramElementUI {
+            id: defaultTourne
+            y: 4
+            color: "#dd9060"
+            anchors.left: parent.left
+            anchors.leftMargin: -8
+            value: "90"
+            instruction: "Tourne"
+            anchors.verticalCenterOffset: 40
+            anchors.verticalCenter: defaultAvance.verticalCenter
         }
 
-        Button {
-            id: loopButton
-            x: 4
-            y: 78
-            text: qsTr("Loop")
+        ProgramElementUI {
+            id: defaultLoop
+            color: "#21c24c"
+            anchors.left: parent.left
+            anchors.leftMargin: -8
+            anchors.top: defaultTourne.bottom
+            anchors.topMargin: 40
+            value: "2"
+            instruction: "Répete"
         }
     }
 

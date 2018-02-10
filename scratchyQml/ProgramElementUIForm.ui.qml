@@ -1,0 +1,55 @@
+import QtQuick 2.4
+
+Item {
+    id: action
+    width: 100
+    height: 30
+    property alias backgroundRect: backgroundRect.color
+    property alias instruction: instruction.text
+    property alias value: value.text
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+    }
+
+    Rectangle {
+        id: backgroundRect
+        color: "#7035a1"
+        anchors.fill: parent
+
+        Text {
+            id: instruction
+            x: 10
+            y: 0
+            text: qsTr("Avance")
+            anchors.leftMargin: 10
+            verticalAlignment: Text.AlignVCenter
+            anchors.fill: parent
+            fontSizeMode: Text.Fit
+            horizontalAlignment: Text.AlignLeft
+            font.pixelSize: 12
+        }
+
+        Rectangle {
+            id: inputRect
+            width: 30
+            color: "#ffffff"
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            anchors.top: parent.top
+            anchors.topMargin: 5
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 5
+
+            TextInput {
+                id: value
+                text: qsTr("1.0")
+                anchors.topMargin: 2
+                horizontalAlignment: Text.AlignHCenter
+                anchors.fill: parent
+                font.pixelSize: 12
+            }
+        }
+    }
+}
