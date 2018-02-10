@@ -2,7 +2,7 @@ import QtQuick 2.4
 
 Item {
     id: action
-    width: 100
+    width: 90
     height: 30
     property alias backgroundRect: backgroundRect.color
     property alias instruction: instruction.text
@@ -16,6 +16,7 @@ Item {
     Rectangle {
         id: backgroundRect
         color: "#7035a1"
+        radius: 7
         anchors.fill: parent
 
         Text {
@@ -33,10 +34,11 @@ Item {
 
         Rectangle {
             id: inputRect
-            width: 30
+            width: 25
             color: "#ffffff"
+            radius: 5
             anchors.right: parent.right
-            anchors.rightMargin: 10
+            anchors.rightMargin: 5
             anchors.top: parent.top
             anchors.topMargin: 5
             anchors.bottom: parent.bottom

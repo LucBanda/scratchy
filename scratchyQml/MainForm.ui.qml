@@ -60,7 +60,8 @@ Item {
     Rectangle {
         id: robotPosition
         color: "#ffffff"
-        border.width: 5
+        radius: 10
+        border.width: 2
         anchors.right: algorithmGroupBox.left
         anchors.rightMargin: 0
         anchors.top: videoFrame.bottom
@@ -85,6 +86,7 @@ Item {
     Rectangle {
         id: algorithmGroupBox
         color: "#d4d4d4"
+        radius: 10
         anchors.left: actionGroupBox.right
         anchors.leftMargin: 0
         anchors.bottom: rectangle.top
