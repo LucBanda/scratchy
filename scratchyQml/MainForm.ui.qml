@@ -6,6 +6,7 @@ Item {
     id: item1
     width: 1024
     height: 800
+    property alias algorithmDropTile: algorithmDropTile
     property alias defaultLoop: defaultLoop
     property alias defaultTourne: defaultTourne
     property alias defaultAvance: defaultAvance
@@ -102,7 +103,7 @@ Item {
         anchors.rightMargin: 0
 
         DropTile {
-            id: dropTile
+            id: algorithmDropTile
             anchors.fill: parent
         }
     }

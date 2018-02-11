@@ -9,13 +9,13 @@ DropArea {
 
     onDropped: {
         var component = Qt.createComponent("ProgramElementUI.qml");
-        component.createObject(dragTarget.parent, {"instruction": dragTarget.drag.source.instruction,
+        var instance = component.createObject(dragTarget.parent, {"instruction": dragTarget.drag.source.instruction,
                                                    "color": dragTarget.drag.source.color,
                                                    "value": dragTarget.drag.source.value,
                                                    "x": dragTarget.drag.x,
                                                    "y": dragTarget.drag.y});
 
-        dragTarget.droppedProxy(component)
+        dragTarget.droppedProxy(instance)
     }
 
     Rectangle {

@@ -7,6 +7,9 @@ ProgramElementUIForm {
 
     MouseArea {
         id: mouseArea
+        width: 40
+        hoverEnabled: true
+        anchors.rightMargin: 35
         anchors.fill: parent
         drag.target:dragableProgramElement
     }

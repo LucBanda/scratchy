@@ -48,11 +48,13 @@ class Algorithm(QObject):
         QObject.__init__(self, parent)
         self._elementList = []
 
-    @pyqtSlot(str, float)
-    def addElement(self, str, value):
+    @pyqtSlot(str, str)
+    def addElement(self, inst, value):
+        print(value)
         element = ProgramElement(self)
-        element.instruction = str
-        element.value = value
+        element.instruction = inst
+        element.value = float(value)
+        print("add value : " + str(element.value))
         self._elementList.append(element)
         self.algorithmChanged.emit()
 

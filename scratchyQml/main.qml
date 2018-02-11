@@ -30,23 +30,16 @@ ApplicationWindow {
     }
 
     MainForm {
-
-        /*defaultAvance.mouseArea.onClicked: {
-            scratchyApp.algorithm.addElement("Move", 1.0)
+        algorithmDropTile.onDroppedProxy: {
+            console.log("Proxy is ok with component : " + element.instruction + " " + element.value)
+            scratchyApp.algorithm.addElement(element.instruction, element.value)
             print_algorithm()
         }
-        defaultTourne.mouseArea.onClicked: {
-            scratchyApp.algorithm.addElement("Turn", 90)
-            print_algorithm()
-        }
-        defaultLoop.mouseArea.onClicked: {
-            scratchyApp.algorithm.addElement("Loop", 2)
-            print_algorithm()
-        }*/
         function print_algorithm() {
             debugTextField.text = ""
-            for (var elem in scratchyApp.algorithm.elementList) {
-                debugTextField.text += scratchyApp.algorithm.elementList[elem].instruction + "\n"
+            for (var index in scratchyApp.algorithm.elementList) {
+                var element = scratchyApp.algorithm.elementList[index]
+                debugTextField.text += element.instruction + ": " + element.value + "\n"
             }
         }
 
