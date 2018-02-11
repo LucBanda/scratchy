@@ -41,29 +41,44 @@ class ProgramElement(QObject):
 
 
 class Algorithm(QObject):
-
-    algorithmChanged = pyqtSignal()
+    elementListChanged = pyqtSignal()
 
     def __init__(self, parent):
         QObject.__init__(self, parent)
         self._elementList = []
 
-    @pyqtSlot(str, str)
-    def addElement(self, inst, value):
-        print(value)
+    def dump(self):
+        string = ""
+        for element in self._elementList:
+            string += element.instruction + ":" + str(element.value) + "\n"
+        return string
+
+    def load(self, string):
+        self._elementList = []
+        for element in string.split('\n'):
+            if element:
+                inst, val = element.split(':')
+                newElement = ProgramElement(None)
+                newElement.instruction = inst
+                newElement.value = float(val)
+                self._elementList.append(newElement)
+                self.elementListChanged.emit()
+
+
+    @pyqtSlot(str, str, QObject, int, int)
+    def addElement(self, inst, value, parent, x, y):
+        print(inst + ' ' + value + ' ' + str(x) + ' ' + str(y))
         element = ProgramElement(self)
         element.instruction = inst
         element.value = float(value)
-        print("add value : " + str(element.value))
         self._elementList.append(element)
-        self.algorithmChanged.emit()
+        self.elementListChanged.emit()
 
-
-    @pyqtProperty(QQmlListProperty, notify=algorithmChanged)
+    @pyqtProperty(QQmlListProperty, notify=elementListChanged)
     def elementList(self):
         return QQmlListProperty(ProgramElement, self, self._elementList)
 
     @elementList.setter
     def elementList(self, value):
         self._elementList = value
-        self.algorithmChanged.emit()
+        self.elementListChanged.emit()

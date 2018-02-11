@@ -4,18 +4,18 @@ DropArea {
     id: dragTarget
 
     property alias dropProxy: dragTarget
-    signal droppedProxy(var element)
+    signal droppedProxy(var element, int x, int y)
     width: 64; height: 64
 
     onDropped: {
-        var component = Qt.createComponent("ProgramElementUI.qml");
-        var instance = component.createObject(dragTarget.parent, {"instruction": dragTarget.drag.source.instruction,
+        /*var component = Qt.createComponent("ProgramElementUI.qml");
+        var instance = component.createObject(null, {"instruction": dragTarget.drag.source.instruction,
                                                    "color": dragTarget.drag.source.color,
                                                    "value": dragTarget.drag.source.value,
                                                    "x": dragTarget.drag.x,
-                                                   "y": dragTarget.drag.y});
+                                                   "y": dragTarget.drag.y});*/
 
-        dragTarget.droppedProxy(instance)
+        dragTarget.droppedProxy(dragTarget.drag.source, dragTarget.drag.x, dragTarget.drag.y)
     }
 
     Rectangle {

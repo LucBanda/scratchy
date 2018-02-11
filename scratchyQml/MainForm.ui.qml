@@ -6,6 +6,7 @@ Item {
     id: item1
     width: 1024
     height: 800
+    property alias algorithmView: algorithmView
     property alias algorithmDropTile: algorithmDropTile
     property alias defaultLoop: defaultLoop
     property alias defaultTourne: defaultTourne
@@ -41,7 +42,6 @@ Item {
 
         ProgramElementUI {
             id: defaultTourne
-            color: "#dd9060"
             anchors.left: parent.left
             anchors.leftMargin: 2
             anchors.top: defaultAvance.bottom
@@ -52,7 +52,6 @@ Item {
 
         ProgramElementUI {
             id: defaultLoop
-            color: "#21c24c"
             anchors.left: parent.left
             anchors.leftMargin: 2
             anchors.top: defaultTourne.bottom
@@ -105,6 +104,55 @@ Item {
         DropTile {
             id: algorithmDropTile
             anchors.fill: parent
+
+            ListView {
+                id: algorithmView
+                x: 0
+                y: 0
+                width: 110
+                height: 160
+                delegate: Item {
+                    x: 5
+                    width: 80
+                    height: 40
+                    Row {
+                        id: row1
+                        Rectangle {
+                            width: 40
+                            height: 40
+                            color: colorCode
+                        }
+
+                        Text {
+                            text: name
+                            anchors.verticalCenter: parent.verticalCenter
+                            font.bold: true
+                        }
+                        spacing: 10
+                    }
+                }
+                model: ListModel {
+                    ListElement {
+                        name: "Grey"
+                        colorCode: "grey"
+                    }
+
+                    ListElement {
+                        name: "Red"
+                        colorCode: "red"
+                    }
+
+                    ListElement {
+                        name: "Blue"
+                        colorCode: "blue"
+                    }
+
+                    ListElement {
+                        name: "Green"
+                        colorCode: "green"
+                    }
+                }
+            }
         }
     }
 

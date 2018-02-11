@@ -4,13 +4,14 @@ Item {
     id: action
     width: 90
     height: 30
-    property alias color: backgroundRect.color
     property alias instruction: instruction.text
     property alias value: value.text
 
     Rectangle {
         id: backgroundRect
-        color: "#7035a1"
+        color: instruction.text == "Avance" ? "#7034a1" :
+               instruction.text == "Tourne" ? "#dd9060" :
+               instruction.text == "Répete" ? "#21c24c" : "#000000"
         radius: 7
         anchors.fill: parent
 
