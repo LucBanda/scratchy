@@ -4,7 +4,7 @@ Item {
     id: action
     width: 90
     height: 30
-    property alias backgroundRect: backgroundRect.color
+    property alias color: backgroundRect.color
     property alias instruction: instruction.text
     property alias value: value.text
 

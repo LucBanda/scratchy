@@ -32,24 +32,30 @@ Item {
 
         ProgramElementUI {
             id: defaultAvance
+            anchors.left: parent.left
+            anchors.leftMargin: 2
+            anchors.top: parent.top
+            anchors.topMargin: 5
         }
 
         ProgramElementUI {
             id: defaultTourne
             color: "#dd9060"
+            anchors.left: parent.left
+            anchors.leftMargin: 2
             anchors.top: defaultAvance.bottom
-            anchors.topMargin: 10
+            anchors.topMargin: 15
             value: "90"
             instruction: "Tourne"
-            anchors.verticalCenterOffset: 40
-            anchors.verticalCenter: defaultAvance.verticalCenter
         }
 
         ProgramElementUI {
             id: defaultLoop
             color: "#21c24c"
+            anchors.left: parent.left
+            anchors.leftMargin: 2
             anchors.top: defaultTourne.bottom
-            anchors.topMargin: 1
+            anchors.topMargin: 15
             value: "2"
             instruction: "Répete"
         }

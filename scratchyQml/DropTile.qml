@@ -4,12 +4,10 @@ DropArea {
     id: dragTarget
 
     property alias dropProxy: dragTarget
-
+    signal droppedProxy(var element)
     width: 64; height: 64
 
     onDropped: {
-        console.log("dropped " + dragTarget.parent)
-        //dragTarget.drag.source.parent.parent = dragTarget.parent
         var component = Qt.createComponent("ProgramElementUI.qml");
         component.createObject(dragTarget.parent, {"instruction": dragTarget.drag.source.instruction,
                                                    "color": dragTarget.drag.source.color,
@@ -17,24 +15,19 @@ DropArea {
                                                    "x": dragTarget.drag.x,
                                                    "y": dragTarget.drag.y});
 
-
-    }
-    MouseArea {
-        id: targetMouseArea
-        anchors.fill: parent
+        dragTarget.droppedProxy(component)
     }
 
     Rectangle {
         id: dropRectangle
-
         anchors.fill: parent
-
+        color: parent.parent.color
         states: [
             State {
                 when: dragTarget.containsDrag
                 PropertyChanges {
                     target: dropRectangle
-                    color: "grey"
+                    color: "lightgrey"
                 }
             }
         ]
