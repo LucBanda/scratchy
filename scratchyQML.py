@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import sys
 import AlgoElement
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     engine = QQmlApplicationEngine()
     scratchy = ScratchyApp(engine)
     engine.rootContext().setContextProperty('scratchyApp', scratchy)
-    engine.load('../scratchyQml/main.qml')
+    engine.load('./scratchyQml/main.qml')
     if engine.rootObjects():
         win = engine.rootObjects()[0]
         win.show()
