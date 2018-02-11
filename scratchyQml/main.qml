@@ -58,6 +58,7 @@ ApplicationWindow {
             scratchyApp.algorithm.addElement(element.instruction, element.value, null, x, y)
             print_algorithm()
         }
+
         algorithmView.model: scratchyApp.algorithm.elementList
         algorithmView.delegate: ProgramElementUI {
             instruction:model.instruction
@@ -65,14 +66,16 @@ ApplicationWindow {
         }
         algorithmView.onCountChanged: {
             /* calculate ListView dimensions based on content */
-
-            // get QQuickItem which is a root element which hosts delegate items
             var root = algorithmView.visibleChildren[0]
             var listViewHeight = 0
             var listViewWidth = 0
 
             // iterate over each delegate item to get their sizes
             for (var i = 0; i < root.visibleChildren.length; i++) {
+                if (i == 0) {
+                    algorithmView.x= scratchyApp.algorithm.elementList[0].x
+                    algorithmView.y= scratchyApp.algorithm.elementList[0].y
+                }
                 listViewHeight += root.visibleChildren[i].height
                 listViewWidth  = Math.max(listViewWidth, root.visibleChildren[i].width)
             }
