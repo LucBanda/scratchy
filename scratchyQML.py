@@ -18,6 +18,7 @@ class ScratchyApp (QObject):
         #self.win.findChild(QObject, "myButton").clicked.connect(self.test3)
         self.ctx = context
         self._algorithm = AlgoElement.Algorithm(parent)
+        self.filename = None
 
     @pyqtSlot(str)
     def save(self, fileName):

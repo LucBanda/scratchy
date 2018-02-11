@@ -71,18 +71,32 @@ class Algorithm(QObject):
 
     def dump(self):
         string = ""
+        if len(self._elementList) > 0:
+            string += 'position.x:' + str(self._elementList[0].x) + "\n"
+            string += 'position.y:' + str(self._elementList[0].y) + "\n"
         for element in self._elementList:
             string += element.instruction + ":" + str(element.value) + "\n"
         return string
 
     def load(self, string):
         self._elementList = []
+        xFound = 0
+        yFound = 0
         for element in string.split('\n'):
             if element:
                 inst, val = element.split(':')
+                if inst == "position.x":
+                    xFound = int(val)
+                    continue
+                if inst == "position.y":
+                    yFound = int(val)
+                    continue
                 newElement = ProgramElement(None)
                 newElement.instruction = inst
                 newElement.value = float(val)
+                if len(self._elementList) == 0:
+                    newElement.x = xFound
+                    newElement.y = yFound
                 self._elementList.append(newElement)
                 self.elementListChanged.emit()
 
