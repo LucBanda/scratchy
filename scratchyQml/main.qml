@@ -55,7 +55,12 @@ ApplicationWindow {
     MainForm {
         algorithmDropTile.onDroppedProxy: {
             console.log("Proxy is ok with component : " + element.instruction + " " + element.value)
-            scratchyApp.algorithm.addElement(element.instruction, element.value, null, x, y)
+            var parentArg = null
+            var list = scratchyApp.algorithm.elementList
+            if (list.length > 0) {
+                parentArg = list[list.length-1]
+            }
+            scratchyApp.algorithm.addElement(element.instruction, element.value, parentArg, x, y)
             print_algorithm()
         }
 

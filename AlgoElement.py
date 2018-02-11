@@ -89,7 +89,7 @@ class Algorithm(QObject):
 
     @pyqtSlot(str, str, QObject, int, int)
     def addElement(self, inst, value, parent, x, y):
-        print(inst + ' ' + value + ' ' + str(x) + ' ' + str(y))
+        print(inst + ' ' + value + ' '+ str(parent) + ' ' + str(x) + ' ' + str(y))
         element = ProgramElement(self)
         if not parent:
             element.x = x
