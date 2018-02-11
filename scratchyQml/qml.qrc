@@ -4,5 +4,6 @@
         <file>MainForm.ui.qml</file>
         <file>ProgramElementUI.qml</file>
         <file>ProgramElementUIForm.ui.qml</file>
+        <file>DropTile.qml</file>
     </qresource>
 </RCC>

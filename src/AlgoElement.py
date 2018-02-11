@@ -46,10 +46,7 @@ class Algorithm(QObject):
 
     def __init__(self, parent):
         QObject.__init__(self, parent)
-        element = ProgramElement(parent)
-        element.instruction = "Move"
-        element.value = 1.0
-        self._elementList = [element]
+        self._elementList = []
 
     @pyqtSlot(str, float)
     def addElement(self, str, value):

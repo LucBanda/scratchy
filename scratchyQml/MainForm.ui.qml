@@ -6,13 +6,16 @@ Item {
     id: item1
     width: 1024
     height: 800
+    property alias defaultLoop: defaultLoop
+    property alias defaultTourne: defaultTourne
+    property alias defaultAvance: defaultAvance
     property alias debugTextField: debugTextField
     property alias algorithmGroupBox: algorithmGroupBox
     property alias actionGroupBox: actionGroupBox
 
     GroupBox {
         id: actionGroupBox
-        width: 100
+        width: 110
         anchors.left: videoFrame.right
         anchors.leftMargin: 0
         anchors.bottom: robotPosition.top
@@ -29,16 +32,13 @@ Item {
 
         ProgramElementUI {
             id: defaultAvance
-            anchors.left: parent.left
-            anchors.leftMargin: -8
         }
 
         ProgramElementUI {
             id: defaultTourne
-            y: 4
             color: "#dd9060"
-            anchors.left: parent.left
-            anchors.leftMargin: -8
+            anchors.top: defaultAvance.bottom
+            anchors.topMargin: 10
             value: "90"
             instruction: "Tourne"
             anchors.verticalCenterOffset: 40
@@ -48,10 +48,8 @@ Item {
         ProgramElementUI {
             id: defaultLoop
             color: "#21c24c"
-            anchors.left: parent.left
-            anchors.leftMargin: -8
             anchors.top: defaultTourne.bottom
-            anchors.topMargin: 40
+            anchors.topMargin: 1
             value: "2"
             instruction: "Répete"
         }
@@ -59,9 +57,10 @@ Item {
 
     Rectangle {
         id: robotPosition
-        color: "#ffffff"
+        color: "#f0fff7"
         radius: 10
-        border.width: 2
+        border.color: "#3be97e"
+        border.width: 1
         anchors.right: algorithmGroupBox.left
         anchors.rightMargin: 0
         anchors.top: videoFrame.bottom
@@ -85,7 +84,7 @@ Item {
 
     Rectangle {
         id: algorithmGroupBox
-        color: "#d4d4d4"
+        color: "#fffcee"
         radius: 10
         anchors.left: actionGroupBox.right
         anchors.leftMargin: 0
@@ -95,13 +94,19 @@ Item {
         anchors.topMargin: 0
         anchors.right: parent.right
         anchors.rightMargin: 0
+
+        DropTile {
+            id: dropTile
+            anchors.fill: parent
+        }
     }
 
     Rectangle {
         id: rectangle
         y: 622
         height: 200
-        color: "#ffffff"
+        color: "#f0f0ff"
+        border.color: "#4819d4"
         anchors.left: robotPosition.right
         anchors.leftMargin: 0
         anchors.right: parent.right

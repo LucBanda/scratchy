@@ -8,11 +8,6 @@ Item {
     property alias instruction: instruction.text
     property alias value: value.text
 
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-    }
-
     Rectangle {
         id: backgroundRect
         color: "#7035a1"
