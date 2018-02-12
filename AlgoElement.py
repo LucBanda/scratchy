@@ -31,8 +31,9 @@ class ProgramElement(QObject):
         return self._x
 
     @x.setter
-    def x(self, x):
-        self._x = x
+    def x(self, value):
+        self._x = value
+        print ("x is now : " + str(self._x))
         self.xChanged.emit()
 
     @pyqtProperty(int, notify=yChanged)
@@ -40,8 +41,8 @@ class ProgramElement(QObject):
         return self._y
 
     @y.setter
-    def y(self, y):
-        self._y = y
+    def y(self, value):
+        self._y = value
         self.yChanged.emit()
 
     @pyqtProperty(float, notify=valueChanged)
@@ -101,17 +102,24 @@ class Algorithm(QObject):
                 self.elementListChanged.emit()
 
 
-    @pyqtSlot(str, str, QObject, int, int)
-    def addElement(self, inst, value, parent, x, y):
-        print(inst + ' ' + value + ' '+ str(parent) + ' ' + str(x) + ' ' + str(y))
+    @pyqtSlot(str, str, int, int)
+    def addElement(self, inst, value, x, y):
+        print(inst + ' ' + value + ' ' + ' ' + str(x) + ' ' + str(y))
         element = ProgramElement(self)
-        if not parent:
-            element.x = x
-            element.y = y
+        element.x = x
+        element.y = y
         element.instruction = inst
         element.value = float(value)
-
         self._elementList.append(element)
+        self.elementListChanged.emit()
+
+    @pyqtSlot(int, str, str, int, int)
+    def updateElement(self, index, inst, value, x, y):
+        print(str(index) + ' ' + inst + ' ' + value + ' ' + str(x) + ' ' + str(y))
+        self._elementList[index].instruction = inst
+        self._elementList[index].value = float(value)
+        self._elementList[index].x = x
+        self._elementList[index].y = y
         self.elementListChanged.emit()
 
     @pyqtProperty(QQmlListProperty, notify=elementListChanged)

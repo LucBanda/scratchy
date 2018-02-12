@@ -6,6 +6,7 @@ Item {
     height: 30
     property alias instruction: instruction.text
     property alias value: value.text
+    property int listIndex: -1
 
     Rectangle {
         id: backgroundRect

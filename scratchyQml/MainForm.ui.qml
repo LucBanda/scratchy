@@ -111,6 +111,8 @@ Item {
                 y: 0
                 width: 110
                 height: 160
+                boundsBehavior: Flickable.StopAtBounds
+                spacing: 2
                 delegate: Item {
                     x: 5
                     width: 80

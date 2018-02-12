@@ -54,13 +54,12 @@ ApplicationWindow {
 
     MainForm {
         algorithmDropTile.onDroppedProxy: {
-            console.log("Proxy is ok with component : " + element.instruction + " " + element.value)
-            var parentArg = null
-            var list = scratchyApp.algorithm.elementList
-            if (list.length > 0) {
-                parentArg = list[list.length-1]
+            console.log("Proxy is ok with component : " + element.instruction + " " + element.value + " " + element.listIndex)
+            if (element.listIndex == -1) {
+                scratchyApp.algorithm.addElement(element.instruction, element.value, x, y)
+            } else {
+                scratchyApp.algorithm.updateElement(element.listIndex, element.instruction, element.value, x, y)
             }
-            scratchyApp.algorithm.addElement(element.instruction, element.value, parentArg, x, y)
             print_algorithm()
         }
 
@@ -68,7 +67,14 @@ ApplicationWindow {
         algorithmView.delegate: ProgramElementUI {
             instruction:model.instruction
             value:model.value
+            listIndex: index
         }
+        algorithmView.onModelChanged: {
+            console.log("this is my line, settings at : " + scratchyApp.algorithm.elementList[0].x + " " + scratchyApp.algorithm.elementList[0].y)
+            algorithmView.x = scratchyApp.algorithm.elementList[0].x
+            algorithmView.y= scratchyApp.algorithm.elementList[0].y
+        }
+
         algorithmView.onCountChanged: {
             /* calculate ListView dimensions based on content */
             var root = algorithmView.visibleChildren[0]
@@ -77,10 +83,6 @@ ApplicationWindow {
 
             // iterate over each delegate item to get their sizes
             for (var i = 0; i < root.visibleChildren.length; i++) {
-                if (i == 0) {
-                    algorithmView.x= scratchyApp.algorithm.elementList[0].x
-                    algorithmView.y= scratchyApp.algorithm.elementList[0].y
-                }
                 listViewHeight += root.visibleChildren[i].height
                 listViewWidth  = Math.max(listViewWidth, root.visibleChildren[i].width)
             }
