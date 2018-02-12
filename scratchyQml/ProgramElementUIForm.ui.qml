@@ -9,10 +9,11 @@ Item {
 
     Rectangle {
         id: backgroundRect
-        color: instruction.text == "Avance" ? "#7034a1" :
-               instruction.text == "Tourne" ? "#dd9060" :
-               instruction.text == "Répete" ? "#21c24c" : "#000000"
+        color: instruction.text == "Avance" ? "#7034a1" : instruction.text
+                                              == "Tourne" ? "#dd9060" : instruction.text
+                                                            == "Répete" ? "#21c24c" : "#000000"
         radius: 7
+        anchors.topMargin: 3
         anchors.fill: parent
 
         Text {
@@ -20,6 +21,7 @@ Item {
             x: 10
             y: 0
             text: qsTr("Avance")
+            anchors.topMargin: 0
             anchors.leftMargin: 10
             verticalAlignment: Text.AlignVCenter
             anchors.fill: parent
@@ -49,5 +51,19 @@ Item {
                 font.pixelSize: 12
             }
         }
+    }
+
+    Rectangle {
+        id: rectangle
+        width: 13
+        height: 5
+        color: backgroundRect.color
+        radius: 3
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 22
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.top: parent.top
+        anchors.topMargin: 0
     }
 }
