@@ -4,26 +4,85 @@ import sys, logging
 import optparse
 import threading
 import math
-
+from RobotItf import RobotItf
 # FIXME
 sys.path.append("./libpomp/python")
 import pomp
 
-
-ROBOT_PROTOCOL_VERSION = 1
-
-ROBOT_EVT_IDENT = 1
-ROBOT_EVT_TELEMETRY = 2
-ROBOT_MSG_INSTRUCTION = 3
-
-ROBOT_EVT_FORMAT_TELEMETRY = "%f%f%f%f%f%f"   # x, y, cap, vx, vy, vang
-ROBOT_MSG_FORMAT_INSTRUCTION = "%s%f"       # instruction: value
-
-
-SAMPLE_RATE = 200 * 1000    # Samples every 200ms
-
 #===============================================================================
 #===============================================================================
+class RobotController(RobotItf):
+    def __init__(self, addrString):
+        RobotItf.__init__(self, addrString, "server")
+        self.timerHandler = pomp.looper.Handler(self.onTimer)
+        self.timer = None
+        self.x = 0.0
+        self.y = 0.0
+        self.cap = 0.0
+        self.vy = 0.0
+        self.vx = 0.0
+        self.vang = 0.0
+        self.avanceLeftIter = -1
+        self.tourneLeftIter = -1
+        self.shouldLoopStatus = False
+        self.currentInstruction = {"": 0}
+
+    def onConnected(self, ctx, conn):
+        # Send connection request
+        logging.info("Connected")
+        self.shouldLoopStatus = True
+        self.setupTimer()
+
+    def onDisconnected(self, ctx, conn):
+        # Clear internal state
+        logging.info("Disconnected")
+        self.shouldLoopStatus = False
+        self.cancelTimer()
+
+    def onInstructionReceived(self, instruction, value):
+        self.currentInstruction = (instruction,value)
+        if (instruction == "Avance"):
+            self.vx = math.sin(self.cap)
+            self.vy = math.cos(self.cap)
+            self.avanceLeftIter = value * 10.0
+        elif (instruction == "Tourne"):
+            self.vang =  math.radians(30)
+            self.tourneLeftIter = math.radians(value) * 10.0 / self.vang
+
+    def setupTimer(self):
+        assert self.timer is None
+        self.timer = threading.Timer(0.1, self.timerHandler.post, [None])
+        self.timer.start()
+
+    def cancelTimer(self):
+        if self.timer is not None:
+            self.timer.cancel()
+            self.timer = None
+
+    def onTimer(self, req):
+        if self.avanceLeftIter >= 0:
+            self.avanceLeftIter -= 1
+            if self.avanceLeftIter < 0:
+                self.vx = 0.0
+                self.vy = 0.0
+                self.sendInstruction(self.currentInstruction[0], self.currentInstruction[1])
+
+        if self.tourneLeftIter >= 0:
+            self.tourneLeftIter -= 1.0
+            if self.tourneLeftIter < 0:
+                self.vang = 0.0
+                self.sendInstruction(self.currentInstruction)
+
+        self.cap += self.vang / 10.0
+        self.x += self.vx / 10.0
+        self.y += self.vy / 10.0
+        self.sendState(self.x, self.y, self.cap, self.vx, self.vy, self.vang)
+        if self.shouldLoopStatus:
+            self.timer = None
+            self.setupTimer()
+
+# ===============================================================================
+# ===============================================================================
 _USAGE = (
     "usage: %prog [<options>] <ctrladdr>\n"
     "Connect to a ishtar server\n"
@@ -38,88 +97,6 @@ _USAGE = (
     "  unix:<path>\n"
     "  unix:@<name>\n"
 )
-
-#===============================================================================
-#===============================================================================
-class RobotController(pomp.EventHandler):
-    def __init__(self, addr):
-        self.pompCtx = pomp.Context(self)
-        (family, addr) = pomp.parseAddr(addr)
-        self.pompCtx.listen(family, addr)
-        self.timerHandler = pomp.looper.Handler(self.onTimer)
-        self.timer = None
-        self.x = 0.0
-        self.y = 0.0
-        self.cap = 0.0
-        self.vy = 0.0
-        self.vx = 0.0
-        self.vang = 0.0
-        self.avanceLeftIter = -1
-        self.tourneLeftIter = -1
-        self.shouldLoopStatus = False
-
-    def stop(self):
-        self.pompCtx.stop()
-
-    def onConnected(self, ctx, conn):
-        # Send connection request
-        logging.info("Connected")
-        self.shouldLoopStatus = True
-        self.setupTimer()
-
-    def onDisconnected(self, ctx, conn):
-        # Clear internal state
-        logging.info("Disconnected")
-        self.shouldLoopStatus = False
-        self.cancelTimer()
-
-    def recvMessage(self, ctx, conn, msg):
-        if msg.msgid == ROBOT_MSG_INSTRUCTION:
-            (instruction, value) = msg.read(ROBOT_MSG_FORMAT_INSTRUCTION)
-            if instruction == "Avance":
-                self.avance(value)
-            if instruction == "Tourne":
-                self.tourne(value)
-
-
-    def avance(self, distance):
-        self.vx = math.sin(self.cap)
-        self.vy = math.cos(self.cap)
-        self.avanceLeftIter = distance * 10.0 + 1
-
-    def tourne(self, angle):
-        self.vang =  math.radians(30)
-        self.tourneLeftIter = math.radians(angle) * 10.0 / self.vang
-
-
-    def setupTimer(self):
-        assert self.timer is None
-        self.timer = threading.Timer(0.1, self.timerHandler.post, [None])
-        self.timer.start()
-
-    def cancelTimer(self):
-        if self.timer is not None:
-            self.timer.cancel()
-            self.timer = None
-
-    def onTimer(self, req):
-        if self.avanceLeftIter > 0:
-            self.avanceLeftIter -= 1
-            if self.avanceLeftIter <= 0:
-                self.vx = 0.0
-                self.vy = 0.0
-        if self.tourneLeftIter > 0:
-            self.tourneLeftIter -= 1.0
-            if self.tourneLeftIter < 0:
-                self.vang = 0.0
-
-        self.cap += self.vang / 10.0
-        self.x += self.vx / 10.0
-        self.y += self.vy / 10.0
-        self.pompCtx.send(ROBOT_EVT_TELEMETRY, ROBOT_EVT_FORMAT_TELEMETRY, self.x, self.y, self.cap, self.vx, self.vy, self.vang)
-        if self.shouldLoopStatus:
-            self.timer = None
-            self.setupTimer()
 
 #===============================================================================
 #===============================================================================
