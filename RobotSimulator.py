@@ -29,6 +29,10 @@ class RobotSimulator(RobotItf):
         self.decimator = self.STATE_DECIMATION
         RobotItf.__init__(self, addrString, "server")
 
+    def destroy(self):
+        self.cancelTimer()
+        self.stop()
+
     def onConnected(self, ctx, conn):
         # Send connection request
         logging.info("Connected")
@@ -73,7 +77,7 @@ class RobotSimulator(RobotItf):
             self.tourneLeftIter -= 1.0
             if self.tourneLeftIter < 0:
                 self.vang = 0.0
-                self.sendInstruction(self.currentInstruction)
+                self.sendInstruction(self.currentInstruction[0], self.currentInstruction[1])
 
         self.cap += self.vang / 10.0
         self.x += self.vx / 10.0
@@ -114,8 +118,8 @@ def main():
         robot = RobotSimulator(args[0])
         while (True):
             pomp.looper.stepLoop()
-        robot.stop()
     except KeyboardInterrupt:
+        robot.destroy()
         pomp.looper.exitLoop()
     sys.exit(0)
 

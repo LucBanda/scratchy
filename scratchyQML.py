@@ -92,5 +92,7 @@ if __name__ == "__main__":
     if engine.rootObjects():
         win = engine.rootObjects()[0]
         win.show()
-        sys.exit(app.exec_())
-    pomp.looper.exitLoop()
+        ret = app.exec_()
+        scratchy.destroy()
+        pomp.looper.exitLoop()
+        sys.exit(ret)
