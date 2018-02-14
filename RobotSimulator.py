@@ -11,9 +11,9 @@ import pomp
 
 #===============================================================================
 #===============================================================================
-class RobotController(RobotItf):
+class RobotSimulator(RobotItf):
+    STATE_DECIMATION = 5
     def __init__(self, addrString):
-        RobotItf.__init__(self, addrString, "server")
         self.timerHandler = pomp.looper.Handler(self.onTimer)
         self.timer = None
         self.x = 0.0
@@ -25,7 +25,9 @@ class RobotController(RobotItf):
         self.avanceLeftIter = -1
         self.tourneLeftIter = -1
         self.shouldLoopStatus = False
-        self.currentInstruction = {"": 0}
+        self.currentInstruction = ("", 0)
+        self.decimator = self.STATE_DECIMATION
+        RobotItf.__init__(self, addrString, "server")
 
     def onConnected(self, ctx, conn):
         # Send connection request
@@ -50,7 +52,7 @@ class RobotController(RobotItf):
             self.tourneLeftIter = math.radians(value) * 10.0 / self.vang
 
     def setupTimer(self):
-        assert self.timer is None
+        self.timer = None
         self.timer = threading.Timer(0.1, self.timerHandler.post, [None])
         self.timer.start()
 
@@ -76,7 +78,10 @@ class RobotController(RobotItf):
         self.cap += self.vang / 10.0
         self.x += self.vx / 10.0
         self.y += self.vy / 10.0
-        self.sendState(self.x, self.y, self.cap, self.vx, self.vy, self.vang)
+        if self.decimator == 0:
+            self.decimator = self.STATE_DECIMATION
+            self.sendState(self.x, self.y, self.cap, self.vx, self.vy, self.vang)
+        self.decimator -= 1
         if self.shouldLoopStatus:
             self.timer = None
             self.setupTimer()
@@ -106,7 +111,7 @@ def main():
 
     try:
         pomp.looper.prepareLoop()
-        robot = RobotController(args[0])
+        robot = RobotSimulator(args[0])
         while (True):
             pomp.looper.stepLoop()
         robot.stop()

@@ -1,8 +1,5 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
-import QtQuick.Dialogs 1.2
-import QtQuick.Layouts 1.3
-import QtGraphicalEffects 1.0
 
 ApplicationWindow {
     visible: true
@@ -10,7 +7,7 @@ ApplicationWindow {
     height: 700
     title: qsTr("Scratchy")
 
-    FileDialog {
+    /*FileDialog {
             id: fileDialog
             nameFilters: ["scratchy files (*.sch)"]
             onAccepted: {
@@ -20,7 +17,7 @@ ApplicationWindow {
                     scratchyApp.save(fileUrl)
             }
         }
-
+*/
     menuBar: MenuBar {
         Menu {
             title: qsTr("File")
@@ -53,6 +50,12 @@ ApplicationWindow {
     }
 
     MainForm {
+        Timer  {
+            interval: 100
+            repeat:true
+            running:true
+            onTriggered: {scratchyApp.timer()}
+        }
         algorithmDropTile.onDroppedProxy: {
             console.log("Proxy is ok with component : " + element.instruction + " " + element.value + " " + element.listIndex)
             if (element.listIndex == -1) {
@@ -62,7 +65,12 @@ ApplicationWindow {
             }
             print_algorithm()
         }
+        debugToolBar.playButton.onClicked: {
+            console.log("sending instruction")
+            scratchyApp.sendInstruction(scratchyApp.algorithm.elementList[0].instruction, scratchyApp.algorithm.elementList[0].value)
+        }
 
+        algorithmView.spacing: -2
         algorithmView.model: scratchyApp.algorithm.elementList
         algorithmView.delegate: ProgramElementUI {
             instruction:model.instruction

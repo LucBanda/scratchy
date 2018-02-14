@@ -3,8 +3,6 @@ import sys
 sys.path.append("./libpomp/python")
 import pomp
 
-LOCAL_POMP_ADDRESS = "inet:127.0.0.1:5000"
-
 ROBOT_EVT_TELEMETRY = 1
 ROBOT_MSG_INSTRUCTION = 2
 
@@ -12,6 +10,8 @@ ROBOT_EVT_FORMAT_TELEMETRY = "%f%f%f%f%f%f"   # x, y, cap, vx, vy, vang
 ROBOT_MSG_FORMAT_INSTRUCTION = "%s%f"       # instruction: value
 
 class RobotItf(pomp.EventHandler):
+    LOCAL_POMP_ADDRESS = "inet:127.0.0.1:5000"
+
     def __init__(self, addrString, role="server"):
         (family, addr) = pomp.parseAddr(addrString)
         self.pompCtx = pomp.Context(self)
@@ -34,10 +34,10 @@ class RobotItf(pomp.EventHandler):
     def stop(self):
         self.pompCtx.stop()
 
-    def onConnected(self):
+    def onConnected(self, ctx, conn):
         pass
 
-    def onDisconnected(self):
+    def onDisconnected(self, ctx, conn):
         pass
 
     def onStateReceived(self, x, y, cap, vx, vy, vang):

@@ -6,6 +6,7 @@ Item {
     id: item1
     width: 1024
     height: 800
+    property alias debugToolBar: debugToolBar
     property alias algorithmView: algorithmView
     property alias algorithmDropTile: algorithmDropTile
     property alias defaultLoop: defaultLoop
@@ -155,6 +156,18 @@ Item {
                     }
                 }
             }
+        }
+
+        DebugToolBarForm {
+            id: debugToolBar
+            x: 51
+            y: 510
+            width: 300
+            height: 50
+            anchors.right: parent.right
+            anchors.rightMargin: 30
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 30
         }
     }
 
