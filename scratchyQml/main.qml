@@ -1,5 +1,6 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
+import QtQuick.Dialogs 1.2
 
 ApplicationWindow {
     visible: true
@@ -7,7 +8,7 @@ ApplicationWindow {
     height: 700
     title: qsTr("Scratchy")
 
-    /*FileDialog {
+    FileDialog {
             id: fileDialog
             nameFilters: ["scratchy files (*.sch)"]
             onAccepted: {
@@ -17,26 +18,26 @@ ApplicationWindow {
                     scratchyApp.save(fileUrl)
             }
         }
-*/
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("File")
             MenuItem {
-                text: qsTr("&Open")
+                text: qsTr("&Ouvrir...")
                 onTriggered: {
                     fileDialog.selectExisting = true
                     fileDialog.open()
                 }
             }
             MenuItem {
-                text: qsTr("&Save")
+                text: qsTr("&Enregistrer")
                 onTriggered: {
                     fileDialog.selectExisting = false
                     scratchyApp.save(null)
                 }
             }
             MenuItem {
-                text: qsTr("&Save As")
+                text: qsTr("&Enregistrer sous...")
                 onTriggered: {
                     fileDialog.selectExisting = false
                     fileDialog.open()
@@ -47,58 +48,90 @@ ApplicationWindow {
                 onTriggered: Qt.quit();
             }
         }
+        Menu {
+            title: qsTr("Algorithme")
+            MenuItem {
+                text: qsTr("&Efface")
+                onTriggered: {
+                    scratchyApp.algorithm.clear()
+                }
+            }
+        }
+    }
+
+    property alias debugToolBar: mainForm.debugToolBar
+    property alias algorithmDropTile: mainForm.algorithmDropTile
+    property alias playButton: debugToolBar.playButton
+
+    Connections {
+        target: scratchyApp.robotController
+
+        onConnectedChanged: {
+            debugToolBar.visible = scratchyApp.robotController.connected
+        }
+    }
+    Timer  {
+        interval: 100
+        repeat:true
+        running:true
+        onTriggered: {scratchyApp.timer()}
     }
 
     MainForm {
-        Timer  {
-            interval: 100
-            repeat:true
-            running:true
-            onTriggered: {scratchyApp.timer()}
-        }
+        id: mainForm
+
+
         algorithmDropTile.onDroppedProxy: {
-            console.log("Proxy is ok with component : " + element.instruction + " " + element.value + " " + element.listIndex)
-            if (element.listIndex == -1) {
+            if (element.listIndex === -1) {
                 scratchyApp.algorithm.addElement(element.instruction, element.value, x, y)
             } else {
                 scratchyApp.algorithm.updateElement(element.listIndex, element.instruction, element.value, x, y)
             }
             print_algorithm()
+
         }
-        debugToolBar.playButton.onClicked: {
-            console.log("sending instruction")
+
+        playButton.onClicked: {
             scratchyApp.sendInstruction(scratchyApp.algorithm.elementList[0].instruction, scratchyApp.algorithm.elementList[0].value)
         }
-
-        algorithmView.spacing: -2
-        algorithmView.model: scratchyApp.algorithm.elementList
-        algorithmView.delegate: ProgramElementUI {
-            instruction:model.instruction
-            value:model.value
-            listIndex: index
-        }
-        algorithmView.onModelChanged: {
-            console.log("this is my line, settings at : " + scratchyApp.algorithm.elementList[0].x + " " + scratchyApp.algorithm.elementList[0].y)
-            algorithmView.x = scratchyApp.algorithm.elementList[0].x
-            algorithmView.y= scratchyApp.algorithm.elementList[0].y
-        }
-
-        algorithmView.onCountChanged: {
-            /* calculate ListView dimensions based on content */
-            var root = algorithmView.visibleChildren[0]
-            var listViewHeight = 0
-            var listViewWidth = 0
-
-            // iterate over each delegate item to get their sizes
-            for (var i = 0; i < root.visibleChildren.length; i++) {
-                listViewHeight += root.visibleChildren[i].height
-                listViewWidth  = Math.max(listViewWidth, root.visibleChildren[i].width)
+        ListView {
+            id: algorithmView
+            parent:algorithmDropTile
+            x: 0
+            y: 0
+            width: 110
+            height: 160
+            boundsBehavior: Flickable.StopAtBounds
+            spacing: -2
+            delegate: ProgramElementUI {
+                instruction:model.instruction
+                value:model.value
+                listIndex: index
             }
+            model: scratchyApp.algorithm.elementList
+            onModelChanged: {
+                        if (scratchyApp.algorithm.elementList.length > 0) {
+                            algorithmView.x = scratchyApp.algorithm.elementList[0].x
+                            algorithmView.y= scratchyApp.algorithm.elementList[0].y
+                        }
+            }
+            onCountChanged: {
+                        /* calculate ListView dimensions based on content */
+                        var root = algorithmView.visibleChildren[0]
+                        var listViewHeight = 0
+                        var listViewWidth = 0
 
-            algorithmView.height = listViewHeight
-            algorithmView.width = listViewWidth
-        }
+                        // iterate over each delegate item to get their sizes
+                        for (var i = 0; i < root.visibleChildren.length; i++) {
+                            listViewHeight += root.visibleChildren[i].height
+                            listViewWidth  = Math.max(listViewWidth, root.visibleChildren[i].width)
+                        }
 
+                        algorithmView.height = listViewHeight
+                        algorithmView.width = listViewWidth
+                    }
+
+            }
         function print_algorithm() {
             debugTextField.text = ""
             for (var index in scratchyApp.algorithm.elementList) {

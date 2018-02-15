@@ -7,7 +7,6 @@ Item {
     width: 1024
     height: 800
     property alias debugToolBar: debugToolBar
-    property alias algorithmView: algorithmView
     property alias algorithmDropTile: algorithmDropTile
     property alias defaultLoop: defaultLoop
     property alias defaultTourne: defaultTourne
@@ -105,57 +104,6 @@ Item {
         DropTile {
             id: algorithmDropTile
             anchors.fill: parent
-
-            ListView {
-                id: algorithmView
-                x: 0
-                y: 0
-                width: 110
-                height: 160
-                boundsBehavior: Flickable.StopAtBounds
-                spacing: 2
-                delegate: Item {
-                    x: 5
-                    width: 80
-                    height: 40
-                    Row {
-                        id: row1
-                        Rectangle {
-                            width: 40
-                            height: 40
-                            color: colorCode
-                        }
-
-                        Text {
-                            text: name
-                            anchors.verticalCenter: parent.verticalCenter
-                            font.bold: true
-                        }
-                        spacing: 10
-                    }
-                }
-                model: ListModel {
-                    ListElement {
-                        name: "Grey"
-                        colorCode: "grey"
-                    }
-
-                    ListElement {
-                        name: "Red"
-                        colorCode: "red"
-                    }
-
-                    ListElement {
-                        name: "Blue"
-                        colorCode: "blue"
-                    }
-
-                    ListElement {
-                        name: "Green"
-                        colorCode: "green"
-                    }
-                }
-            }
         }
 
         DebugToolBarForm {
@@ -164,6 +112,7 @@ Item {
             y: 510
             width: 300
             height: 50
+            visible: false
             anchors.right: parent.right
             anchors.rightMargin: 30
             anchors.bottom: parent.bottom

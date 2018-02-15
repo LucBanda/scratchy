@@ -33,7 +33,6 @@ class ProgramElement(QObject):
     @x.setter
     def x(self, value):
         self._x = value
-        print ("x is now : " + str(self._x))
         self.xChanged.emit()
 
     @pyqtProperty(int, notify=yChanged)
@@ -101,10 +100,12 @@ class Algorithm(QObject):
                 self._elementList.append(newElement)
                 self.elementListChanged.emit()
 
-
+    @pyqtSlot()
+    def clear(self):
+        self._elementList = []
+        self.elementListChanged.emit()
     @pyqtSlot(str, str, int, int)
     def addElement(self, inst, value, x, y):
-        print(inst + ' ' + value + ' ' + ' ' + str(x) + ' ' + str(y))
         element = ProgramElement(self)
         element.x = x
         element.y = y
@@ -115,7 +116,6 @@ class Algorithm(QObject):
 
     @pyqtSlot(int, str, str, int, int)
     def updateElement(self, index, inst, value, x, y):
-        print(str(index) + ' ' + inst + ' ' + value + ' ' + str(x) + ' ' + str(y))
         self._elementList[index].instruction = inst
         self._elementList[index].value = float(value)
         self._elementList[index].x = x
