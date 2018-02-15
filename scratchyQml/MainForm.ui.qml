@@ -14,6 +14,7 @@ Item {
     property alias debugTextField: debugTextField
     property alias algorithmGroupBox: algorithmGroupBox
     property alias actionGroupBox: actionGroupBox
+    property alias playButton: debugToolBar.playButton
 
     GroupBox {
         id: actionGroupBox

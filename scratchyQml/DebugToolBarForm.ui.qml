@@ -5,7 +5,6 @@ Item {
     id: debugToolBar
     width: 300
     height: 50
-    property alias rectangleVisible: rectangle.visible
     property alias playButton: playButton
 
     Rectangle {

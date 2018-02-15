@@ -61,7 +61,7 @@ ApplicationWindow {
 
     property alias debugToolBar: mainForm.debugToolBar
     property alias algorithmDropTile: mainForm.algorithmDropTile
-    property alias playButton: debugToolBar.playButton
+    property alias playButton: mainForm.playButton
 
     Connections {
         target: scratchyApp.robotController
