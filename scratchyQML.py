@@ -14,15 +14,15 @@ import pomp
 # source : http://ceg.developpez.com/tutoriels/pyqt/qt-quick-python/02-interaction-qml-python/
 
 class RobotController(RobotItf, QObject):
-
-    xChanged = pyqtSignal()
-    yChanged = pyqtSignal()
-    capChanged = pyqtSignal()
-    vxChanged = pyqtSignal()
-    vyChanged = pyqtSignal()
-    vangChanged = pyqtSignal()
+    xRobotChanged = pyqtSignal()
+    yRobotChanged = pyqtSignal()
+    capRobotChanged = pyqtSignal()
+    vxRobotChanged = pyqtSignal()
+    vyRobotChanged = pyqtSignal()
+    vangRobotChanged = pyqtSignal()
     connectedChanged = pyqtSignal()
     lastInstructionChanged = pyqtSignal()
+    statusChanged = pyqtSignal()
 
     def __init__(self, parent):
         QObject.__init__(self, parent)
@@ -44,53 +44,53 @@ class RobotController(RobotItf, QObject):
         self._connected = value
         self.connectedChanged.emit()
 
-    @pyqtProperty(float, notify=xChanged)
-    def x(self):
+    @pyqtProperty(float, notify=xRobotChanged)
+    def xRobot(self):
         return self._x
-    @x.setter
-    def x(self, value):
+    @xRobot.setter
+    def xRobot(self, value):
         self._x = value
-        self.xChanged.emit()
+        self.xRobotChanged.emit()
 
-    @pyqtProperty(float, notify=yChanged)
-    def y(self):
+    @pyqtProperty(float, notify=yRobotChanged)
+    def yRobot(self):
         return self._y
-    @y.setter
-    def y(self, value):
+    @yRobot.setter
+    def yRobot(self, value):
         self._y = value
-        self.yChanged.emit()
+        self.yRobotChanged.emit()
 
-    @pyqtProperty(float, notify=capChanged)
-    def cap(self):
+    @pyqtProperty(float, notify=capRobotChanged)
+    def capRobot(self):
         return self._cap
-    @cap.setter
-    def cap(self, value):
+    @capRobot.setter
+    def capRobot(self, value):
         self._cap = value
-        self.capChanged.emit()
+        self.capRobotChanged.emit()
 
-    @pyqtProperty(float, notify=vxChanged)
-    def vx(self):
+    @pyqtProperty(float, notify=vxRobotChanged)
+    def vxRobot(self):
         return self._vx
-    @vx.setter
-    def vx(self, value):
+    @vxRobot.setter
+    def vxRobot(self, value):
         self._vx = value
-        self.vxChanged.emit()
+        self.vxRobotChanged.emit()
 
-    @pyqtProperty(float, notify=vyChanged)
-    def vy(self):
+    @pyqtProperty(float, notify=vyRobotChanged)
+    def vyRobot(self):
         return self._vy
-    @vy.setter
-    def vy(self, value):
+    @vyRobot.setter
+    def vyRobot(self, value):
         self._vy = value
-        self.vyChanged.emit()
+        self.vyRobotChanged.emit()
 
-    @pyqtProperty(float, notify=vangChanged)
-    def vang(self):
+    @pyqtProperty(float, notify=vangRobotChanged)
+    def vangRobot(self):
         return self._vang
-    @vang.setter
-    def vang(self, value):
+    @vangRobot.setter
+    def vangRobot(self, value):
         self._vang = value
-        self.vangChanged.emit()
+        self.vangRobotChanged.emit()
 
     @pyqtProperty(AlgoElement.ProgramElement, notify = lastInstructionChanged)
     def lastInstruction(self):
@@ -108,12 +108,13 @@ class RobotController(RobotItf, QObject):
         self.connected = False
 
     def onStateReceived(self, x, y, cap, vx, vy, vang):
-        self.x = x
-        self.y = y
-        self.cap = cap
-        self.vx = vx
-        self.vy = vy
-        self.vang = vang
+        self._x = x
+        self._y = y
+        self._cap = cap
+        self._vx = vx
+        self._vy = vy
+        self._vang = vang
+        self.statusChanged.emit()
 
     def onInstructionReceived(self, instruction, value):
         newInst = AlgoElement.ProgramElement(None)

@@ -62,6 +62,17 @@ ApplicationWindow {
     property alias debugToolBar: mainForm.debugToolBar
     property alias algorithmDropTile: mainForm.algorithmDropTile
     property alias playButton: mainForm.playButton
+    property alias robot: mainForm.robot
+    property double xOrig: mainForm.robotPlayground.width / 2
+    property double yOrig: mainForm.robotPlayground.height / 2
+
+
+    Rotation {
+        id: rotation
+        origin.x: robot.x
+        origin.y: robot.y
+        angle: scratchyApp.robotController.capRobot
+    }
 
     Connections {
         target: scratchyApp.robotController
@@ -69,6 +80,17 @@ ApplicationWindow {
         onConnectedChanged: {
             debugToolBar.visible = scratchyApp.robotController.connected
         }
+        onStatusChanged: {
+            console.log(scratchyApp.robotController.xRobot,
+                        scratchyApp.robotController.yRobot,
+                        xOrig,
+                        yOrig)
+            robot.x = scratchyApp.robotController.xRobot*10 + xOrig
+            robot.y = scratchyApp.robotController.yRobot*10 + yOrig
+            robot.transform = rotation
+
+        }
+
     }
     Timer  {
         interval: 100
@@ -80,7 +102,6 @@ ApplicationWindow {
     MainForm {
         id: mainForm
 
-
         algorithmDropTile.onDroppedProxy: {
             if (element.listIndex === -1) {
                 scratchyApp.algorithm.addElement(element.instruction, element.value, x, y)
@@ -88,12 +109,13 @@ ApplicationWindow {
                 scratchyApp.algorithm.updateElement(element.listIndex, element.instruction, element.value, x, y)
             }
             print_algorithm()
-
         }
 
         playButton.onClicked: {
+            console.log("sending")
             scratchyApp.sendInstruction(scratchyApp.algorithm.elementList[0].instruction, scratchyApp.algorithm.elementList[0].value)
         }
+
         ListView {
             id: algorithmView
             parent:algorithmDropTile

@@ -6,6 +6,10 @@ Item {
     id: item1
     width: 1024
     height: 800
+    property alias robotPlayground: robotPlayground
+    property alias robotY: robot.y
+    property alias robotX: robot.x
+    property alias robot: robot
     property alias debugToolBar: debugToolBar
     property alias algorithmDropTile: algorithmDropTile
     property alias defaultLoop: defaultLoop
@@ -21,7 +25,7 @@ Item {
         width: 110
         anchors.left: videoFrame.right
         anchors.leftMargin: 0
-        anchors.bottom: robotPosition.top
+        anchors.bottom: robotPlayground.top
         anchors.bottomMargin: 0
         anchors.top: parent.top
         anchors.topMargin: 0
@@ -63,7 +67,7 @@ Item {
     }
 
     Rectangle {
-        id: robotPosition
+        id: robotPlayground
         color: "#f0fff7"
         radius: 10
         border.color: "#3be97e"
@@ -76,6 +80,14 @@ Item {
         anchors.leftMargin: 0
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
+
+        RobotForm {
+            id: robot
+            x: 180
+            y: 228
+            width: 30
+            height: 30
+        }
     }
 
     Rectangle {
@@ -127,7 +139,7 @@ Item {
         height: 200
         color: "#f0f0ff"
         border.color: "#4819d4"
-        anchors.left: robotPosition.right
+        anchors.left: robotPlayground.right
         anchors.leftMargin: 0
         anchors.right: parent.right
         anchors.rightMargin: 0
