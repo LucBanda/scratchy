@@ -11,6 +11,7 @@ from RobotItf import RobotItf
 sys.path.append("./libpomp/python")
 import pomp
 
+
 # source : http://ceg.developpez.com/tutoriels/pyqt/qt-quick-python/02-interaction-qml-python/
 
 class RobotController(RobotItf, QObject):
@@ -30,15 +31,17 @@ class RobotController(RobotItf, QObject):
         self._connected = False
         self._x = 0.0
         self._y = 0.0
-        self._cap  = 0.0
+        self._cap = 0.0
         self._vx = 0.0
         self._vy = 0.0
         self._vang = 0.0
         self._lastInstruction = AlgoElement.ProgramElement(None)
+        self.client = None
 
     @pyqtProperty(bool, notify=connectedChanged)
     def connected(self):
         return self._connected
+
     @connected.setter
     def connected(self, value):
         self._connected = value
@@ -47,6 +50,7 @@ class RobotController(RobotItf, QObject):
     @pyqtProperty(float, notify=xRobotChanged)
     def xRobot(self):
         return self._x
+
     @xRobot.setter
     def xRobot(self, value):
         self._x = value
@@ -55,6 +59,7 @@ class RobotController(RobotItf, QObject):
     @pyqtProperty(float, notify=yRobotChanged)
     def yRobot(self):
         return self._y
+
     @yRobot.setter
     def yRobot(self, value):
         self._y = value
@@ -63,6 +68,7 @@ class RobotController(RobotItf, QObject):
     @pyqtProperty(float, notify=capRobotChanged)
     def capRobot(self):
         return self._cap
+
     @capRobot.setter
     def capRobot(self, value):
         self._cap = value
@@ -71,6 +77,7 @@ class RobotController(RobotItf, QObject):
     @pyqtProperty(float, notify=vxRobotChanged)
     def vxRobot(self):
         return self._vx
+
     @vxRobot.setter
     def vxRobot(self, value):
         self._vx = value
@@ -79,6 +86,7 @@ class RobotController(RobotItf, QObject):
     @pyqtProperty(float, notify=vyRobotChanged)
     def vyRobot(self):
         return self._vy
+
     @vyRobot.setter
     def vyRobot(self, value):
         self._vy = value
@@ -87,12 +95,13 @@ class RobotController(RobotItf, QObject):
     @pyqtProperty(float, notify=vangRobotChanged)
     def vangRobot(self):
         return self._vang
+
     @vangRobot.setter
     def vangRobot(self, value):
         self._vang = value
         self.vangRobotChanged.emit()
 
-    @pyqtProperty(AlgoElement.ProgramElement, notify = lastInstructionChanged)
+    @pyqtProperty(AlgoElement.ProgramElement, notify=lastInstructionChanged)
     def lastInstruction(self):
         return self._lastInstruction
 
@@ -121,11 +130,40 @@ class RobotController(RobotItf, QObject):
         newInst.instruction = instruction
         newInst.value = value
         self.lastInstruction = newInst
+        if self.client:
+            self.client.onInstructionReceived(instruction, value)
 
 
-class ScratchyApp (QObject):
+class Interpreter(QObject):
+    instructionDone = pyqtSignal(int, str, float, arguments = ['pc', 'instruction', 'value'])
+    stopped = pyqtSignal()
+
+    def __init__(self, parent, algorithm, robotController):
+        super(Interpreter, self).__init__(parent)
+        self.algorithm = algorithm
+        self.robotController = robotController
+        self.PC = 0
+
+    @pyqtSlot()
+    def start(self):
+        self.PC = -1
+        self.next()
+
+    @pyqtSlot()
+    def next(self):
+        self.PC += 1
+        if self.PC < len(self.algorithm._elementList):
+            self.robotController.sendInstruction(self.algorithm._elementList[self.PC].instruction,
+                                                 self.algorithm._elementList[self.PC].value)
+
+    def onInstructionReceived(self, instruction, value):
+        self.instructionDone.emit(self.PC, instruction, value)
+        if self.PC == len(self.algorithm._elementList):
+            self.stopped.emit()
+
+class ScratchyApp(QObject):
     algorithmChanged = pyqtSignal()
-    onInstructionReceived = pyqtSignal()
+    interpreterChanged = pyqtSignal()
     robotControllerChanged = pyqtSignal()
 
     def __init__(self, context, parent=None):
@@ -133,27 +171,32 @@ class ScratchyApp (QObject):
         pomp.looper.prepareLoop()
         self.win = parent
         # Recherche d'un enfant appelé myButton dont le signal clicked sera connecté à la fonction test3
-        #self.win.findChild(QObject, "myButton").clicked.connect(self.test3)
+        # self.win.findChild(QObject, "myButton").clicked.connect(self.test3)
         self.ctx = context
         self._algorithm = AlgoElement.Algorithm(parent)
         self.filename = None
         self._robotController = RobotController(self)
+        self._interpreter = Interpreter(self, self._algorithm, self._robotController)
+        self._robotController.client = self._interpreter
 
+    def onInstructionDone(self, pc, instruction, value):
+        print("instruction OK received from Robot :", pc, instruction, value)
+        self.instructionDone.emit(pc, instruction, value)
 
-    def onInstructionReceived(self, instruction, value):
-        print ("instruction OK received from Robot")
+    def onStopped(self):
+        print ("END")
 
     @pyqtSlot(str)
     def save(self, fileName):
         if fileName:
-            self.filename = fileName.replace("file:///","/")
+            self.filename = fileName.replace("file:///", "/")
         if self.filename:
             open(self.filename, "w").write(self._algorithm.dump())
 
     @pyqtSlot(str)
     def open(self, fileName):
         if fileName:
-            self.filename = fileName.replace("file:///","/")
+            self.filename = fileName.replace("file:///", "/")
             self._algorithm.load(open(self.filename, "r").read())
 
     @pyqtSlot()
@@ -168,6 +211,14 @@ class ScratchyApp (QObject):
     def robotController(self, value):
         self._robotController = value
         self.robotControllerChanged.emit()
+
+    @pyqtProperty(Interpreter, notify=interpreterChanged)
+    def interpreter(self):
+        return self._interpreter
+    @interpreter.setter
+    def interpreter(self, value):
+        self._interpreter = value
+        self.interpreterChanged.emit()
 
     @pyqtProperty(AlgoElement.Algorithm, notify=algorithmChanged)
     def algorithm(self):
@@ -190,6 +241,7 @@ if __name__ == "__main__":
     qmlRegisterType(AlgoElement.ProgramElement, 'Scratchy', 1, 0, 'ProgramElement')
     qmlRegisterType(AlgoElement.Algorithm, 'Scratchy', 1, 0, 'Algorithm')
     qmlRegisterType(RobotController, 'Scratchy', 1, 0, 'RobotController')
+    qmlRegisterType(Interpreter, 'Scratchy', 1, 0, 'Interpreter')
     qmlRegisterType(ScratchyApp, 'Scratchy', 1, 0, 'ScratchyApp')
 
     app = QApplication(sys.argv)

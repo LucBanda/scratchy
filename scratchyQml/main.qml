@@ -91,6 +91,18 @@ ApplicationWindow {
         }
 
     }
+    Connections {
+        target: scratchyApp.interpreter
+
+        onStopped: {
+            mainForm.print_debug("STOP")
+        }
+        onInstructionDone: {
+            mainForm.print_debug("fini : " + pc + " " + instruction + " " + value)
+            scratchyApp.interpreter.next()
+        }
+
+    }
     Timer  {
         interval: 10
         repeat:true
@@ -107,11 +119,10 @@ ApplicationWindow {
             } else {
                 scratchyApp.algorithm.updateElement(element.listIndex, element.instruction, element.value, x, y)
             }
-            print_algorithm()
         }
 
         playButton.onClicked: {
-            scratchyApp.sendInstruction(scratchyApp.algorithm.elementList[0].instruction, scratchyApp.algorithm.elementList[0].value)
+            scratchyApp.interpreter.start()
         }
 
         ListView {
@@ -153,12 +164,8 @@ ApplicationWindow {
                     }
 
             }
-        function print_algorithm() {
-            debugTextField.text = ""
-            for (var index in scratchyApp.algorithm.elementList) {
-                var element = scratchyApp.algorithm.elementList[index]
-                debugTextField.text += element.instruction + ": " + element.value + "\n"
-            }
+        function print_debug(str) {
+            debugTextField.text += str + "\n"
         }
 
         anchors.fill: parent

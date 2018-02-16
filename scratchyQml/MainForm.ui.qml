@@ -148,7 +148,7 @@ Item {
 
         Text {
             id: debugTextField
-            text: qsTr("Text")
+            text: qsTr("")
             anchors.fill: parent
             font.pixelSize: 12
         }
