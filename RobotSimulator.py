@@ -12,7 +12,7 @@ import pomp
 #===============================================================================
 #===============================================================================
 class RobotSimulator(RobotItf):
-    STATE_DECIMATION = 5
+    STATE_DECIMATION = 1
     def __init__(self, addrString):
         self.timerHandler = pomp.looper.Handler(self.onTimer)
         self.timer = None
@@ -47,11 +47,11 @@ class RobotSimulator(RobotItf):
 
     def onInstructionReceived(self, instruction, value):
         self.currentInstruction = (instruction,value)
-        print(instruction, value)
+        logging.debug(instruction, value)
         if (instruction == "Avance"):
             self.vx = value * math.sin(self.cap)
             self.vy = value * math.cos(self.cap)
-            print (self.vx, self.vy)
+            logging.debug(self.vx, self.vy)
             self.avanceLeftIter = abs(value) * 10.0
         elif (instruction == "Tourne"):
             self.vang =  math.radians(30)
@@ -86,8 +86,8 @@ class RobotSimulator(RobotItf):
         self.y += self.vy / 10.0
         if self.decimator == 0:
             self.decimator = self.STATE_DECIMATION
-            print (self.x, self.y, self.cap, self.vx, self.vy, self.vang)
-            self.sendState(self.x, self.y, self.cap, self.vx, self.vy, self.vang)
+            logging.debug("%f %f %f %f %f %f", self.x, self.y, self.cap, self.vx, self.vy, self.vang)
+            self.sendState(self.x, self.y, math.degrees(self.cap), self.vx, self.vy, math.degrees(self.vang))
         self.decimator -= 1
         if self.shouldLoopStatus:
             self.timer = None

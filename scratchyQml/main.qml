@@ -65,15 +65,14 @@ ApplicationWindow {
     property alias robot: mainForm.robot
     property double xOrig: mainForm.robotPlayground.width / 2
     property double yOrig: mainForm.robotPlayground.height / 2
-
+    property double rotateAngle: 0.0
 
     Rotation {
         id: rotation
-        origin.x: robot.x
-        origin.y: robot.y
-        angle: scratchyApp.robotController.capRobot
+        origin.x: robot.width/2
+        origin.y: robot.height/2
+        angle: rotateAngle
     }
-
     Connections {
         target: scratchyApp.robotController
 
@@ -81,19 +80,20 @@ ApplicationWindow {
             debugToolBar.visible = scratchyApp.robotController.connected
         }
         onStatusChanged: {
-            console.log(scratchyApp.robotController.xRobot,
+            /*console.log(scratchyApp.robotController.xRobot,
                         scratchyApp.robotController.yRobot,
-                        xOrig,
-                        yOrig)
-            robot.x = scratchyApp.robotController.xRobot*2 + xOrig
-            robot.y = scratchyApp.robotController.yRobot*2 + yOrig
+                        scratchyApp.robotController.capRobot,
+                        scratchyApp.robotController.vangRobot)*/
+            robot.x = xOrig + scratchyApp.robotController.xRobot*2
+            robot.y = yOrig - scratchyApp.robotController.yRobot*2
+            rotateAngle = scratchyApp.robotController.capRobot
             robot.transform = rotation
 
         }
 
     }
     Timer  {
-        interval: 100
+        interval: 10
         repeat:true
         running:true
         onTriggered: { scratchyApp.timer() }
