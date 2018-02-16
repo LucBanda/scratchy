@@ -66,7 +66,6 @@ ApplicationWindow {
     property double xOrig: mainForm.robotPlayground.width / 2
     property double yOrig: mainForm.robotPlayground.height / 2
     property double rotateAngle: 0.0
-
     Rotation {
         id: rotation
         origin.x: robot.width/2
@@ -112,7 +111,6 @@ ApplicationWindow {
         }
 
         playButton.onClicked: {
-            console.log("sending")
             scratchyApp.sendInstruction(scratchyApp.algorithm.elementList[0].instruction, scratchyApp.algorithm.elementList[0].value)
         }
 
@@ -129,6 +127,7 @@ ApplicationWindow {
                 instruction:model.instruction
                 value:model.value
                 listIndex: index
+                onValueChanged: model.value = Number(value)
             }
             model: scratchyApp.algorithm.elementList
             onModelChanged: {

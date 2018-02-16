@@ -50,8 +50,9 @@ class ProgramElement(QObject):
 
     @value.setter
     def value(self, value):
-        self._value = value
-        self.valueChanged.emit()
+        if self._value != value:
+            self._value = value
+            self.valueChanged.emit()
 
     @pyqtProperty(QQmlListProperty)
     def childs(self):
