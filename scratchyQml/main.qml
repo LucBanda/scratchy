@@ -85,8 +85,8 @@ ApplicationWindow {
                         scratchyApp.robotController.yRobot,
                         xOrig,
                         yOrig)
-            robot.x = scratchyApp.robotController.xRobot*10 + xOrig
-            robot.y = scratchyApp.robotController.yRobot*10 + yOrig
+            robot.x = scratchyApp.robotController.xRobot*2 + xOrig
+            robot.y = scratchyApp.robotController.yRobot*2 + yOrig
             robot.transform = rotation
 
         }
@@ -96,7 +96,7 @@ ApplicationWindow {
         interval: 100
         repeat:true
         running:true
-        onTriggered: {scratchyApp.timer()}
+        onTriggered: { scratchyApp.timer() }
     }
 
     MainForm {

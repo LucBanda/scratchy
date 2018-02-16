@@ -47,10 +47,12 @@ class RobotSimulator(RobotItf):
 
     def onInstructionReceived(self, instruction, value):
         self.currentInstruction = (instruction,value)
+        print(instruction, value)
         if (instruction == "Avance"):
-            self.vx = math.sin(self.cap)
-            self.vy = math.cos(self.cap)
-            self.avanceLeftIter = value * 10.0
+            self.vx = value * math.sin(self.cap)
+            self.vy = value * math.cos(self.cap)
+            print (self.vx, self.vy)
+            self.avanceLeftIter = abs(value) * 10.0
         elif (instruction == "Tourne"):
             self.vang =  math.radians(30)
             self.tourneLeftIter = math.radians(value) * 10.0 / self.vang
@@ -84,6 +86,7 @@ class RobotSimulator(RobotItf):
         self.y += self.vy / 10.0
         if self.decimator == 0:
             self.decimator = self.STATE_DECIMATION
+            print (self.x, self.y, self.cap, self.vx, self.vy, self.vang)
             self.sendState(self.x, self.y, self.cap, self.vx, self.vy, self.vang)
         self.decimator -= 1
         if self.shouldLoopStatus:
