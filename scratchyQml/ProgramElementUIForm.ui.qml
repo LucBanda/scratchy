@@ -4,6 +4,7 @@ Item {
     id: action
     width: 90
     height: 30
+    property  alias backgroundRectColor: backgroundRect.color
     property alias instruction: instruction.text
     property alias value: value.text
     property int listIndex: -1

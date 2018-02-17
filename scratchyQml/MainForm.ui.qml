@@ -16,7 +16,6 @@ Item {
     property alias defaultTourne: defaultTourne
     property alias defaultAvance: defaultAvance
     property alias debugTextField: debugTextField
-    property alias algorithmGroupBox: algorithmGroupBox
     property alias actionGroupBox: actionGroupBox
     property alias playButton: debugToolBar.playButton
 
@@ -72,7 +71,7 @@ Item {
         radius: 10
         border.color: "#3be97e"
         border.width: 1
-        anchors.right: algorithmGroupBox.left
+        anchors.right: algorithmDropTile.left
         anchors.rightMargin: 0
         anchors.top: videoFrame.bottom
         anchors.topMargin: 0
@@ -101,41 +100,11 @@ Item {
         anchors.leftMargin: 0
     }
 
-    Rectangle {
-        id: algorithmGroupBox
-        color: "#fffcee"
-        radius: 10
-        anchors.left: actionGroupBox.right
-        anchors.leftMargin: 0
-        anchors.bottom: rectangle.top
-        anchors.bottomMargin: 0
-        anchors.top: parent.top
-        anchors.topMargin: 0
-        anchors.right: parent.right
-        anchors.rightMargin: 0
-
-        DropTile {
-            id: algorithmDropTile
-            anchors.fill: parent
-        }
-
-        DebugToolBarForm {
-            id: debugToolBar
-            x: 51
-            y: 510
-            width: 300
-            height: 50
-            visible: false
-            anchors.right: parent.right
-            anchors.rightMargin: 30
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 30
-        }
-    }
 
     Rectangle {
         id: rectangle
         y: 622
+        width: algorithmDropTile.width
         height: 200
         color: "#f0f0ff"
         border.color: "#4819d4"
@@ -151,6 +120,31 @@ Item {
             text: qsTr("")
             anchors.fill: parent
             font.pixelSize: 12
+        }
+    }
+    DropTile {
+        id: algorithmDropTile
+        color: "#fffcee"
+        anchors.bottom: rectangle.top
+        anchors.bottomMargin: 0
+        anchors.left: actionGroupBox.right
+        anchors.leftMargin: 0
+        anchors.right: parent.right
+        anchors.rightMargin: 0
+        anchors.top: parent.top
+        anchors.topMargin: 0
+
+        DebugToolBarForm {
+            id: debugToolBar
+            x: 51
+            y: 510
+            width: 300
+            height: 50
+            visible: false
+            anchors.right: parent.right
+            anchors.rightMargin: 30
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 30
         }
     }
 }

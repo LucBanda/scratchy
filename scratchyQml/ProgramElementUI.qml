@@ -1,17 +1,29 @@
 import QtQuick 2.4
 
-ProgramElementUIForm {
-    id: dragableProgramElement
+Item {
+    id: root
+    property alias color: dragableProgramElement.backgroundRectColor
+    property alias instruction: dragableProgramElement.instruction
+    property alias value: dragableProgramElement.value
+    property alias listIndex: dragableProgramElement.listIndex
 
-    Drag.active: mouseArea.drag.active
-    Drag.dragType: Drag.Automatic
+    width: dragableProgramElement.width
+    height: dragableProgramElement.height
 
-    MouseArea {
-        id: mouseArea
-        width: 40
-        hoverEnabled: true
-        anchors.rightMargin: 35
+    ProgramElementUIForm {
+        id: dragableProgramElement
         anchors.fill: parent
-        drag.target:dragableProgramElement
+        property int listIndex: -1
+        Drag.active: mouseArea.drag.active
+        Drag.dragType: Drag.Automatic
+
+        MouseArea {
+            id: mouseArea
+            width: 40
+            hoverEnabled: true
+            anchors.rightMargin: 35
+            anchors.fill: parent
+            drag.target:dragableProgramElement
+        }
     }
 }

@@ -69,6 +69,7 @@ class Algorithm(QObject):
     def __init__(self, parent):
         QObject.__init__(self, parent)
         self._elementList = []
+        self.nextIndex = None
 
     def dump(self):
         string = ""
@@ -105,23 +106,38 @@ class Algorithm(QObject):
     def clear(self):
         self._elementList = []
         self.elementListChanged.emit()
-    @pyqtSlot(str, str, int, int)
-    def addElement(self, inst, value, x, y):
+
+    def newElement(self, inst, value, x, y):
         element = ProgramElement(self)
         element.x = x
         element.y = y
         element.instruction = inst
         element.value = float(value)
-        self._elementList.append(element)
+        return element
+
+    @pyqtSlot(str, str, int, int)
+    def addElement(self, inst, value, x, y):
+        element = self.newElement(inst, value, x, y)
+        if self.nextIndex:
+            self._elementList.insert(self.nextIndex, element)
+            self.nextIndex = None
+        else:
+            self._elementList.append(element)
         self.elementListChanged.emit()
 
-    @pyqtSlot(int, str, str, int, int)
+    @pyqtSlot(int)
+    def nextElementIndex(self, index):
+        self.nextIndex = index
+
+    @ pyqtSlot(int, str, str, int, int)
     def updateElement(self, index, inst, value, x, y):
         self._elementList[index].instruction = inst
         self._elementList[index].value = float(value)
         self._elementList[index].x = x
         self._elementList[index].y = y
+        self.nextIndex = None
         self.elementListChanged.emit()
+
 
     @pyqtProperty(QQmlListProperty, notify=elementListChanged)
     def elementList(self):

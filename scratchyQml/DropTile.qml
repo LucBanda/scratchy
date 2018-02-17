@@ -4,27 +4,23 @@ DropArea {
     id: dragTarget
 
     property alias dropProxy: dragTarget
+    property alias keys: dragTarget.keys
+    property alias color: dropRectangle.color
+    property bool disabled: false
     signal droppedProxy(var element, int x, int y)
     width: 64; height: 64
+    keys:[]
 
     onDropped: {
-        /*var component = Qt.createComponent("ProgramElementUI.qml");
-        var instance = component.createObject(null, {"instruction": dragTarget.drag.source.instruction,
-                                                   "color": dragTarget.drag.source.color,
-                                                   "value": dragTarget.drag.source.value,
-                                                   "x": dragTarget.drag.x,
-                                                   "y": dragTarget.drag.y});*/
-
-        dragTarget.droppedProxy(dragTarget.drag.source, dragTarget.drag.x, dragTarget.drag.y)
+            dragTarget.droppedProxy(dragTarget.drag.source, dragTarget.drag.x, dragTarget.drag.y)
     }
 
     Rectangle {
         id: dropRectangle
         anchors.fill: parent
-        color: parent.parent.color
         states: [
             State {
-                when: dragTarget.containsDrag
+                when: dragTarget.containsDrag && !disabled
                 PropertyChanges {
                     target: dropRectangle
                     color: "lightgrey"
