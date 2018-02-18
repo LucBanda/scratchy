@@ -6,7 +6,7 @@ Item {
     property alias instruction: dragableProgramElement.instruction
     property alias value: dragableProgramElement.value
     property alias listIndex: dragableProgramElement.listIndex
-
+    property alias internalState: dragableProgramElement.state
     width: dragableProgramElement.width
     height: dragableProgramElement.height
 

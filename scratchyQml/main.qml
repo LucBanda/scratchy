@@ -99,7 +99,6 @@ ApplicationWindow {
             mainForm.print_debug("fini : " + pc + " " + instruction + " " + value)
             scratchyApp.interpreter.next()
         }
-
     }
 
     Timer  {
@@ -162,6 +161,10 @@ ApplicationWindow {
                     value:model.value
                     listIndex: index
                     onValueChanged: model.value = Number(value)
+                    Connections {
+                        target: model
+                        onExecutingChanged: programElement.internalState = model.executing ? "executing" : "normal"
+                    }
                     states: [
                         State {
                             when: targetArea.containsDrag

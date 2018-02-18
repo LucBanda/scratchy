@@ -153,10 +153,12 @@ class Interpreter(QObject):
     def next(self):
         self.PC += 1
         if self.PC < len(self.algorithm._elementList):
+            self.algorithm._elementList[self.PC].executing = True
             self.robotController.sendInstruction(self.algorithm._elementList[self.PC].instruction,
                                                  self.algorithm._elementList[self.PC].value)
 
     def onInstructionReceived(self, instruction, value):
+        self.algorithm._elementList[self.PC].executing = False
         self.instructionDone.emit(self.PC, instruction, value)
         if self.PC == len(self.algorithm._elementList):
             self.stopped.emit()

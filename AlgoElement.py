@@ -7,6 +7,7 @@ class ProgramElement(QObject):
     valueChanged = pyqtSignal()
     xChanged = pyqtSignal()
     yChanged = pyqtSignal()
+    executingChanged = pyqtSignal()
 
     def __init__(self, parent):
         QObject.__init__(self, parent)
@@ -16,6 +17,7 @@ class ProgramElement(QObject):
         self._childs = []
         self._x = 0
         self._y = 0
+        self._executing = False
 
     @pyqtProperty(str, notify=instructionChanged)
     def instruction(self):
@@ -61,6 +63,15 @@ class ProgramElement(QObject):
     @childs.setter
     def childs(self, value):
         self._childs = value
+
+    @pyqtProperty(bool, notify=executingChanged)
+    def executing(self):
+        return self._executing
+
+    @executing.setter
+    def executing(self, value):
+        self._executing = value
+        self.executingChanged.emit()
 
 
 class Algorithm(QObject):

@@ -4,7 +4,7 @@ Item {
     id: action
     width: 90
     height: 30
-    property  alias backgroundRectColor: backgroundRect.color
+    property alias backgroundRectColor: backgroundRect.color
     property alias instruction: instruction.text
     property alias value: value.text
     property int listIndex: -1
@@ -67,5 +67,23 @@ Item {
         anchors.leftMargin: 10
         anchors.top: parent.top
         anchors.topMargin: 0
+        border.width: 0
     }
+    states: [
+        State {
+            name: "normal"
+            PropertyChanges {
+                target: backgroundRect
+                border.width: 0
+            }
+        },
+        State {
+            name: "executing"
+            PropertyChanges {
+                target: backgroundRect
+                border.color: "#80e142"
+                border.width: 3
+            }
+        }
+    ]
 }
