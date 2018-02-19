@@ -5,25 +5,24 @@ Item {
     width: 90
     height: 30
     property alias backgroundRectColor: backgroundRect.color
-    property alias instruction: instruction.text
     property alias value: value.text
+    property string instruction: "Avance"
     property int listIndex: -1
     property bool executing: false
+    property bool selected: false
 
     Rectangle {
         id: backgroundRect
-        color: instruction.text == "Avance" ? "#7034a1" : instruction.text
-                                              == "Tourne" ? "#dd9060" : instruction.text
-                                                            == "Répete" ? "#21c24c" : "#000000"
+
         radius: 7
         anchors.topMargin: 3
         anchors.fill: parent
 
         border.color: "#80e142"
-        border.width: executing? 3 : 0
+        border.width: executing ? 3 : 0
 
         Text {
-            id: instruction
+            id: instructionText
             x: 10
             y: 0
             text: qsTr("Avance")
@@ -50,7 +49,7 @@ Item {
 
             TextInput {
                 id: value
-                text: qsTr("1.0")
+                text: qsTr("1")
                 anchors.topMargin: 2
                 horizontalAlignment: Text.AlignHCenter
                 anchors.fill: parent
@@ -73,4 +72,62 @@ Item {
         anchors.topMargin: 0
         border.width: 0
     }
+    states: [
+        State {
+            name: "Avance"
+            when: instruction == "Avance"
+
+            PropertyChanges {
+                target: instructionText
+                text: qsTr("Avance")
+            }
+
+            PropertyChanges {
+                target: backgroundRect
+                color: selected ? "grey" : "#7034a1"
+            }
+
+            PropertyChanges {
+                target: value
+                text: qsTr("1")
+            }
+        },
+        State {
+            name: "Tourne"
+            when: instruction === "Tourne"
+
+            PropertyChanges {
+                target: instructionText
+                text: qsTr("Tourne")
+            }
+
+            PropertyChanges {
+                target: backgroundRect
+                color: selected ? "grey" : "#dd9060"
+            }
+
+            PropertyChanges {
+                target: value
+                text: qsTr("90")
+            }
+        },
+        State {
+            name: "Répète"
+            when: instruction === "Répete"
+            PropertyChanges {
+                target: instructionText
+                text: qsTr("Répete")
+            }
+
+            PropertyChanges {
+                target: backgroundRect
+                color: selected ? "grey" : "#21c24c"
+            }
+
+            PropertyChanges {
+                target: value
+                text: qsTr("2")
+            }
+        }
+    ]
 }

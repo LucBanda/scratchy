@@ -2,11 +2,11 @@ import QtQuick 2.4
 
 Item {
     id: root
-    property alias color: dragableProgramElement.backgroundRectColor
     property alias instruction: dragableProgramElement.instruction
     property alias value: dragableProgramElement.value
     property alias listIndex: dragableProgramElement.listIndex
     property alias executing: dragableProgramElement.executing
+    property alias selected: dragableProgramElement.selected
 
     width: dragableProgramElement.width
     height: dragableProgramElement.height

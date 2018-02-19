@@ -163,7 +163,7 @@ ApplicationWindow {
                             }
                             PropertyChanges {
                                 target: programElement
-                                color:'grey'
+                                selected: true
                             }
                         }
                     ]
