@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QObject, pyqtProperty
 from PyQt5.QtQml import qmlRegisterType, QQmlComponent, QQmlEngine, QQmlListProperty
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
+import math
 
 class ProgramElement(QObject):
     instructionChanged = pyqtSignal()
@@ -52,9 +53,10 @@ class ProgramElement(QObject):
 
     @value.setter
     def value(self, value):
-        if self._value != value:
-            self._value = value
-            self.valueChanged.emit()
+        if value != "" and not math.isnan(value):
+            if self._value != value:
+                self._value = value
+                self.valueChanged.emit()
 
     @pyqtProperty(QQmlListProperty)
     def childs(self):
