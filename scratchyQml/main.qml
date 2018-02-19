@@ -54,6 +54,7 @@ ApplicationWindow {
                 text: qsTr("&Efface")
                 onTriggered: {
                     scratchyApp.algorithm.clear()
+                    mainForm.debugTextField.text = ""
                 }
             }
         }
