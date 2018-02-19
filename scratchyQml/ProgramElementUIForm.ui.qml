@@ -8,6 +8,7 @@ Item {
     property alias instruction: instruction.text
     property alias value: value.text
     property int listIndex: -1
+    property bool executing: false
 
     Rectangle {
         id: backgroundRect
@@ -17,6 +18,9 @@ Item {
         radius: 7
         anchors.topMargin: 3
         anchors.fill: parent
+
+        border.color: "#80e142"
+        border.width: executing? 3 : 0
 
         Text {
             id: instruction
@@ -69,21 +73,4 @@ Item {
         anchors.topMargin: 0
         border.width: 0
     }
-    states: [
-        State {
-            name: "normal"
-            PropertyChanges {
-                target: backgroundRect
-                border.width: 0
-            }
-        },
-        State {
-            name: "executing"
-            PropertyChanges {
-                target: backgroundRect
-                border.color: "#80e142"
-                border.width: 3
-            }
-        }
-    ]
 }

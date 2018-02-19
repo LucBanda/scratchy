@@ -80,7 +80,6 @@ ApplicationWindow {
 
         onConnectedChanged: {
             debugToolBar.visible = scratchyApp.robotController.connected
-            console.log (algorithmDropTile.keys)
         }
         onStatusChanged: {
             robot.x = xOrig + scratchyApp.robotController.xRobot*2
@@ -134,9 +133,7 @@ ApplicationWindow {
             //model:fakeModel
             model: scratchyApp.algorithm.elementList
             onModelChanged: {
-                console.log("model changed")
                 if (scratchyApp.algorithm.elementList.length > 0) {
-                    console.log(scratchyApp.algorithm.elementList[0].x, scratchyApp.algorithm.elementList[0].y)
                     algorithmView.x = scratchyApp.algorithm.elementList[0].x
                     algorithmView.y= scratchyApp.algorithm.elementList[0].y
                 }
@@ -155,10 +152,8 @@ ApplicationWindow {
                     value:model.value
                     listIndex: index
                     onValueChanged: model.value = Number(value)
-                    Connections {
-                        target: model
-                        onExecutingChanged: programElement.internalState = model.executing ? "executing" : "normal"
-                    }
+                    executing: model.executing
+
                     states: [
                         State {
                             when: targetArea.containsDrag
