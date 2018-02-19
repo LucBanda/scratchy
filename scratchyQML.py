@@ -10,7 +10,7 @@ from RobotItf import RobotItf
 # FIXME
 sys.path.append("./libpomp/python")
 import pomp
-
+from pomp.looper import _Loop
 
 # source : http://ceg.developpez.com/tutoriels/pyqt/qt-quick-python/02-interaction-qml-python/
 
@@ -134,6 +134,22 @@ class RobotController(RobotItf, QObject):
             self.client.onInstructionReceived(instruction, value)
 
 
+class QtPompLoop(_Loop, QObject):
+    postSignal = pyqtSignal(object, object)
+
+    def __init__(self):
+        QObject.__init__(self)
+        _Loop.__init__(self)
+        self.postSignal.connect(self.handlerCb)
+
+    def post(self, handler, req):
+        self.postSignal.emit(handler, req)
+
+    @pyqtSlot(object, object)
+    def handlerCb(self, handler, req):
+        handler.cb(req)
+
+
 class Interpreter(QObject):
     instructionDone = pyqtSignal(int, str, float, arguments = ['pc', 'instruction', 'value'])
     stopped = pyqtSignal()
@@ -170,7 +186,7 @@ class ScratchyApp(QObject):
 
     def __init__(self, context, parent=None):
         super(ScratchyApp, self).__init__(parent)
-        pomp.looper.prepareLoop()
+        pomp.looper.prepareLoop(QtPompLoop())
         self.win = parent
         # Recherche d'un enfant appelé myButton dont le signal clicked sera connecté à la fonction test3
         # self.win.findChild(QObject, "myButton").clicked.connect(self.test3)
@@ -200,10 +216,6 @@ class ScratchyApp(QObject):
         if fileName:
             self.filename = fileName.replace("file:///", "/")
             self._algorithm.load(open(self.filename, "r").read())
-
-    @pyqtSlot()
-    def timer(self):
-        pomp.looper.stepLoop()
 
     @pyqtProperty(RobotController, notify=robotControllerChanged)
     def robotController(self):
@@ -249,9 +261,11 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     engine = QQmlApplicationEngine()
     scratchy = ScratchyApp(engine)
+
     engine.rootContext().setContextProperty('scratchyApp', scratchy)
     engine.load('./scratchyQml/main.qml')
     ret = 0
+
     if engine.rootObjects():
         win = engine.rootObjects()[0]
         win.show()

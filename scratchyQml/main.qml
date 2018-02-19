@@ -102,13 +102,6 @@ ApplicationWindow {
         }
     }
 
-    Timer  {
-        interval: 10
-        repeat:true
-        running:true
-        onTriggered: { scratchyApp.timer() }
-    }
-
     MainForm {
         id: mainForm
 
