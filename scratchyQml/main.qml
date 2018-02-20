@@ -106,9 +106,9 @@ ApplicationWindow {
 
         algorithmDropTile.onDroppedProxy: {
             if (element.listIndex === -1) {
-                scratchyApp.algorithm.addElement(element.instruction, element.value, x, y)
+                    scratchyApp.algorithm.addElement(element.programElement.instruction, element.programElement.value, x, y)
             } else {
-                scratchyApp.algorithm.updateElement(element.listIndex, element.instruction, element.value, x, y)
+                scratchyApp.algorithm.updateElement(element.listIndex, element.programElement.instruction, element.programElement.value, x, y)
             }
         }
 
@@ -118,17 +118,45 @@ ApplicationWindow {
 
         ListModel {
             id: fakeModel
-            ListElement { instruction: "Avance"; value: 8 }
-            ListElement { instruction: "Tourne"; value: 5 }
+            Component.onCompleted: {
+                append({ "instruction": "Répete", "value": 5, "childs":[
+                           {"instruction": "Avance", "value": 8, "childs":[]},
+                           { "instruction": "Répete", "value": 5, "childs":[
+                                       {"instruction": "Avance", "value": 8, "childs":[]},
+                                       {"instruction": "Tourne", "value": 180, "childs":[]}
+                                   ]},
+                           {"instruction": "Tourne", "value": 180, "childs":[]},
+                           { "instruction": "Répete", "value": 5, "childs":[
+                                       {"instruction": "Avance", "value": 8, "childs":[]},
+                                       {"instruction": "Tourne", "value": 180, "childs":[]}
+                                   ]},
+
+                                   ]})
+            }
         }
+
+        Component {
+            id:recursableDelegate
+            ProgramElementUI {
+                id:programElementUi
+                property int programElementIndex: index
+                programElement: model
+                listIndex: programElementIndex
+
+                onValueChanged: { model.value = Number(value) }
+                onAddAfter: { model.context.addAfter(element.programElement.instruction, element.programElement.value, x, y) }
+                onAddInside: { model.context.addElementAtIndex(0, element.programElement.instruction, element.programElement.value, x, y) }
+                childListView.model: model.childs
+                childListView.delegate: recursableDelegate
+            }
+        }
+
         ListView {
             id: algorithmView
             parent:algorithmDropTile
             x: 0
             y: 0
-            width: 110
-            height: 160
-            boundsBehavior: Flickable.StopAtBounds
+            height:count > 0 ? contentItem.childrenRect.height : 0
             spacing: -2
             //model:fakeModel
             model: scratchyApp.algorithm.elementList
@@ -138,52 +166,7 @@ ApplicationWindow {
                     algorithmView.y= scratchyApp.algorithm.elementList[0].y
                 }
             }
-            delegate: DropArea {
-                id: targetArea
-
-                width: programElement.width
-                height: programElement.height
-                onDropped: {
-                    scratchyApp.algorithm.nextElementIndex(index+1)
-                }
-                ProgramElementUI {
-                    id:programElement
-                    instruction:model.instruction
-                    value:model.value
-                    listIndex: index
-                    onValueChanged: model.value = Number(value)
-                    executing: model.executing
-
-                    states: [
-                        State {
-                            when: targetArea.containsDrag
-                            PropertyChanges {
-                                target: algorithmDropTile
-                                disabled: true
-                            }
-                            PropertyChanges {
-                                target: programElement
-                                selected: true
-                            }
-                        }
-                    ]
-                }
-            }
-            onCountChanged: {
-                /* calculate ListView dimensions based on content */
-                var root = algorithmView.visibleChildren[0]
-                var listViewHeight = 0
-                var listViewWidth = 0
-
-                // iterate over each delegate item to get their sizes
-                for (var i = 0; i < root.visibleChildren.length; i++) {
-                    listViewHeight += root.visibleChildren[i].height
-                    listViewWidth  = Math.max(listViewWidth, root.visibleChildren[i].width)
-                }
-
-                algorithmView.height = listViewHeight
-                algorithmView.width = listViewWidth
-            }
+            delegate: recursableDelegate
 
         }
 

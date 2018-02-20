@@ -42,6 +42,11 @@ Item {
             anchors.leftMargin: 2
             anchors.top: parent.top
             anchors.topMargin: 5
+            programElement: Item {
+                property string instruction:"Avance"
+                property string value: "1"
+                property bool executing: false
+            }
         }
 
         ProgramElementUI {
@@ -50,8 +55,11 @@ Item {
             anchors.leftMargin: 2
             anchors.top: defaultAvance.bottom
             anchors.topMargin: 15
-            value: "90"
-            instruction: "Tourne"
+            programElement: Item {
+                property string instruction:"Tourne"
+                property string value: "90"
+                property bool executing: false
+            }
         }
 
         ProgramElementUI {
@@ -60,8 +68,11 @@ Item {
             anchors.leftMargin: 2
             anchors.top: defaultTourne.bottom
             anchors.topMargin: 15
-            value: "2"
-            instruction: "Répete"
+            programElement: Item {
+                property string instruction:"Répete"
+                property string value: "2"
+                property bool executing: false
+            }
         }
     }
 

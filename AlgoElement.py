@@ -9,10 +9,12 @@ class ProgramElement(QObject):
     xChanged = pyqtSignal()
     yChanged = pyqtSignal()
     executingChanged = pyqtSignal()
+    childsChanged = pyqtSignal()
 
     def __init__(self, parent):
         QObject.__init__(self, parent)
-        self._parent = None
+        self._parent = parent
+        self.addAfterCb = None
         self._instruction = ""
         self._value = 0
         self._childs = []
@@ -20,32 +22,21 @@ class ProgramElement(QObject):
         self._y = 0
         self._executing = False
 
+    @pyqtProperty(QObject)
+    def context(self):
+        return self
+
     @pyqtProperty(str, notify=instructionChanged)
     def instruction(self):
         return self._instruction
-
-    @instruction.setter
-    def instruction(self, value):
-        self._instruction = value
-        self.instructionChanged.emit()
 
     @pyqtProperty(int, notify=xChanged)
     def x(self):
         return self._x
 
-    @x.setter
-    def x(self, value):
-        self._x = value
-        self.xChanged.emit()
-
     @pyqtProperty(int, notify=yChanged)
     def y(self):
         return self._y
-
-    @y.setter
-    def y(self, value):
-        self._y = value
-        self.yChanged.emit()
 
     @pyqtProperty(float, notify=valueChanged)
     def value(self):
@@ -58,13 +49,13 @@ class ProgramElement(QObject):
                 self._value = value
                 self.valueChanged.emit()
 
-    @pyqtProperty(QQmlListProperty)
+    @pyqtProperty(QQmlListProperty, notify=childsChanged)
     def childs(self):
         return QQmlListProperty(ProgramElement, self, self._childs)
 
-    @childs.setter
-    def childs(self, value):
-        self._childs = value
+    def addChild(self, index, child):
+        self._childs.insert(index, child)
+        self.childsChanged.emit()
 
     @pyqtProperty(bool, notify=executingChanged)
     def executing(self):
@@ -75,6 +66,27 @@ class ProgramElement(QObject):
         self._executing = value
         self.executingChanged.emit()
 
+    @pyqtSlot(str, float, int, int)
+    def addAfter(self, inst, value, x, y):
+        print ("onAddAfter python : ", self.instruction, inst)
+        self.addAfterCb(inst, value, x, y)
+
+    @pyqtSlot(int, str, float, int, int)
+    def addElementAtIndex(self, index, inst, value, x, y):
+        element = newElement(self,
+                             inst, value, x, y)
+        element.addAfterCb = lambda inst, val, x, y: self.addElementAtIndex(index+1, inst, val, x, y)
+        self._childs.insert(index, element)
+        self.childsChanged.emit()
+
+def newElement(parent, inst, value, x, y):
+    element = ProgramElement(parent)
+    element._x = x
+    element._y = y
+    element._instruction = inst
+    print(inst, value, x, y)
+    element.value = float(value)
+    return element
 
 class Algorithm(QObject):
     elementListChanged = pyqtSignal()
@@ -82,7 +94,6 @@ class Algorithm(QObject):
     def __init__(self, parent):
         QObject.__init__(self, parent)
         self._elementList = []
-        self.nextIndex = None
 
     def dump(self):
         string = ""
@@ -120,35 +131,24 @@ class Algorithm(QObject):
         self._elementList = []
         self.elementListChanged.emit()
 
-    def newElement(self, inst, value, x, y):
-        element = ProgramElement(self)
-        element.x = x
-        element.y = y
-        element.instruction = inst
-        element.value = float(value)
-        return element
-
     @pyqtSlot(str, str, int, int)
     def addElement(self, inst, value, x, y):
-        element = self.newElement(inst, value, x, y)
-        if self.nextIndex:
-            self._elementList.insert(self.nextIndex, element)
-            self.nextIndex = None
-        else:
-            self._elementList.append(element)
-        self.elementListChanged.emit()
+        print("add element at ", 0, " : ", inst, value, x, y)
+        self.addElementAtIndex(0, inst, value, x, y)
 
-    @pyqtSlot(int)
-    def nextElementIndex(self, index):
-        self.nextIndex = index
+    def addElementAtIndex(self, index, inst, value, x, y):
+        element = newElement(self, inst, value, x, y)
+        element.addAfterCb = lambda inst, val, x, y: self.addElementAtIndex(index+1, inst, val, x, y)
+        self._elementList.insert(index, element)
+        self.elementListChanged.emit()
 
     @ pyqtSlot(int, str, str, int, int)
     def updateElement(self, index, inst, value, x, y):
-        self._elementList[index].instruction = inst
-        self._elementList[index].value = float(value)
-        self._elementList[index].x = x
-        self._elementList[index].y = y
-        self.nextIndex = None
+        print("update element", index)
+        self._elementList[index]._instruction = inst
+        self._elementList[index]._value = float(value)
+        self._elementList[index]._x = x
+        self._elementList[index]._y = y
         self.elementListChanged.emit()
 
 
