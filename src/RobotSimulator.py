@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
-import sys, logging
-import optparse
-import threading
+import logging
 import math
+import optparse
+import sys
+import threading
+
 from RobotItf import RobotItf
+
 # FIXME
 sys.path.append("./libpomp/python")
 import pomp

@@ -1,6 +1,8 @@
-from PyQt5.QtCore import QObject, pyqtProperty, pyqtSlot, pyqtSignal
-from RobotItf import RobotItf
 from AlgoElement import ProgramElement
+from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal
+
+from RobotItf import RobotItf
+
 
 class RobotController(RobotItf, QObject):
     xRobotChanged = pyqtSignal()
@@ -115,8 +117,8 @@ class RobotController(RobotItf, QObject):
 
     def onInstructionReceived(self, instruction, value):
         newInst = ProgramElement(None)
-        newInst.instruction = instruction
-        newInst.value = value
+        newInst._instruction = instruction
+        newInst._value = value
         self.lastInstruction = newInst
         if self.client:
             self.client.onInstructionReceived(instruction, value)
