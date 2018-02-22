@@ -45,15 +45,16 @@ class ScratchyApp(QObject):
         self._algorithm = Algorithm(parent)
         self.filename = None
         self._robotController = RobotController(self)
-        self._interpreter = Interpreter(self, self._algorithm, self._robotController)
+        self._interpreter = Interpreter(self, self._algorithm._elementList, self._robotController)
         self._robotController.client = self._interpreter
+
+    def finishedExecutionList(self):
+        print ("END")
+        self._interpreter.stopped.emit()
 
     def onInstructionDone(self, pc, instruction, value):
         print("instruction OK received from Robot :", pc, instruction, value)
         self.instructionDone.emit(pc, instruction, value)
-
-    def onStopped(self):
-        print ("END")
 
     @pyqtSlot(str)
     def save(self, fileName):

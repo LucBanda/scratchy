@@ -97,7 +97,6 @@ ApplicationWindow {
         }
         onInstructionDone: {
             mainForm.print_debug("fini : " + pc + " " + instruction + " " + value)
-            scratchyApp.interpreter.next()
         }
     }
 

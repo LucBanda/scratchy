@@ -197,7 +197,7 @@ Item {
 
             PropertyChanges {
                 target: backgroundRect
-                color: insideTargetArea.containsDrag ? "grey" : "#21c24c"
+                color: insideTargetArea.containsDrag ? "grey" : "#c0d6c4"
                 radius: 7
                 anchors.bottomMargin: 0
             }
@@ -221,8 +221,9 @@ Item {
             PropertyChanges {
                 target: backgroundRect2
                 height: 10
-                color: targetArea.containsDrag ? "grey" : "#21c24c"
+                color: targetArea.containsDrag ? "grey" : "#c0d6c4"
                 radius: 3
+                border.color: backgroundRect.color
                 anchors.bottomMargin: 0
                 visible: true
             }

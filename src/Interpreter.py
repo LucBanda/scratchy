@@ -5,10 +5,13 @@ class Interpreter(QObject):
     instructionDone = pyqtSignal(int, str, float, arguments = ['pc', 'instruction', 'value'])
     stopped = pyqtSignal()
 
-    def __init__(self, parent, algorithm, robotController):
+    def __init__(self, parent, executionList, robotController):
         super(Interpreter, self).__init__(parent)
-        self.algorithm = algorithm
+        self.executionList = executionList
+        self._parent = parent
         self.robotController = robotController
+        self.subInterpreter = None
+        self.loopCount = 0
         self.PC = 0
 
     @pyqtSlot()
@@ -18,14 +21,43 @@ class Interpreter(QObject):
 
     @pyqtSlot()
     def next(self):
+        if (self.subInterpreter):
+            self.subInterpreter.next()
+            return
         self.PC += 1
-        if self.PC < len(self.algorithm._elementList):
-            self.algorithm._elementList[self.PC].executing = True
-            self.robotController.sendInstruction(self.algorithm._elementList[self.PC].instruction,
-                                                 self.algorithm._elementList[self.PC].value)
+        if self.PC == len(self.executionList):
+            self._parent.finishedExecutionList()
+            return
+        if self.PC < len(self.executionList):
+            inst = self.executionList[self.PC].instruction
+            val = self.executionList[self.PC].value
+            self.executionList[self.PC].executing = True
+            if (inst != "Répete"):
+                self.robotController.sendInstruction(inst, val)
+            else:
+                self.loopCount = val
+                self.subInterpreter = Interpreter(self, self.executionList[self.PC].childs, self.robotController)
+                self.robotController.client = self.subInterpreter
+                self.subInterpreter.start()
+
+
+    def finishedExecutionList(self):
+        self.loopCount -= 1
+        if (self.loopCount == 0):
+            self.subInterpreter = None
+            self.robotController.client = self
+            self.next()
+        else:
+            self.subInterpreter = Interpreter(self, self.executionList[self.PC].childs, self.robotController)
+            self.robotController.client = self.subInterpreter
+            self.subInterpreter.start()
+
 
     def onInstructionReceived(self, instruction, value):
-        self.algorithm._elementList[self.PC].executing = False
+        if (self.subInterpreter):
+            self.subInterpreter.next()
+            return
+        self.executionList[self.PC].executing = False
+        self.next()
         self.instructionDone.emit(self.PC, instruction, value)
-        if self.PC == len(self.algorithm._elementList):
-            self.stopped.emit()
+
