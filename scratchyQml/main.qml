@@ -144,7 +144,7 @@ ApplicationWindow {
                 listIndex: programElementIndex
 
                 onValueChanged: { model.value = Number(value) }
-                onAddAfter: { model.context.addAfter(element.programElement.instruction, element.programElement.value, x, y) }
+                onAddAfter: { model.context.addAfter(index, element.programElement.instruction, element.programElement.value, x, y) }
                 onAddInside: { model.context.addElementAtIndex(0, element.programElement.instruction, element.programElement.value, x, y) }
                 childListView.model: model.childs
                 childListView.delegate: recursableDelegate
@@ -156,14 +156,14 @@ ApplicationWindow {
             parent:algorithmDropTile
             x: 0
             y: 0
-            height:count > 0 ? contentItem.childrenRect.height : 0
+            height: count > 0 ? contentItem.childrenRect.height : 0
             spacing: -2
             //model:fakeModel
             model: scratchyApp.algorithm.elementList
             onModelChanged: {
                 if (scratchyApp.algorithm.elementList.length > 0) {
-                    algorithmView.x = scratchyApp.algorithm.elementList[0].x
-                    algorithmView.y= scratchyApp.algorithm.elementList[0].y
+                    algorithmView.x = scratchyApp.algorithm.x
+                    algorithmView.y = scratchyApp.algorithm.y
                 }
             }
             delegate: recursableDelegate

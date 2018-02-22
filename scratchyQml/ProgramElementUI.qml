@@ -4,9 +4,8 @@ import QtQuick.Controls 1.4
 Item {
     id: action
     width: 90
-    height: 30 + childListRect.height + (childListRect.height? 10:0)
+    height: 30 + childListRect.height + (programElement.instruction == "Répete"? 10:0)
     property alias childListView: childListView
-    property alias childListRect: childListRect
     property var programElement
     property alias value: value.text
     property int listIndex: -1
@@ -101,7 +100,7 @@ Item {
         anchors.topMargin: 0
         anchors.leftMargin: 0
         visible: true
-        color: "#004b64bd"
+        color: "transparent"
         ListView {
             id:childListView
             anchors.fill:parent
@@ -244,7 +243,6 @@ Item {
             PropertyChanges {
                 target: childListRect
                 visible: true
-                color: "#4b64bd"
             }
 
             PropertyChanges {
