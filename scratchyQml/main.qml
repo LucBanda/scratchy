@@ -53,7 +53,7 @@ ApplicationWindow {
             MenuItem {
                 text: qsTr("&Efface")
                 onTriggered: {
-                    scratchyApp.algorithm.clear()
+                    scratchyApp.clear()
                     mainForm.debugTextField.text = ""
                 }
             }

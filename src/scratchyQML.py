@@ -101,6 +101,12 @@ class ScratchyApp(QObject):
     def sendInstruction(self, instruction, value):
         self._robotController.sendInstruction(instruction, value)
 
+    @pyqtSlot()
+    def clear(self):
+        self._algorithm.clear()
+        self._interpreter = Interpreter(self, self._algorithm._elementList, self._robotController)
+        self._robotController.client = self._interpreter
+
     def destroy(self):
         self._robotController.stop()
 
