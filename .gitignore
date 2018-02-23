@@ -1,0 +1,4 @@
+build-scratchyQml-Desktop-Debug/
+*.qmlc
+src/__pycache__
+.idea/
