@@ -107,6 +107,7 @@ class ScratchyApp(QObject):
         self._interpreter = Interpreter(self, self._algorithm._elementList, self._robotController)
         self._robotController.client = self._interpreter
 
+    @pyqtSlot()
     def destroy(self):
         self._robotController.stop()
 
@@ -116,6 +117,7 @@ if __name__ == "__main__":
     qmlRegisterType(RobotController, 'Scratchy', 1, 0, 'RobotController')
     qmlRegisterType(Interpreter, 'Scratchy', 1, 0, 'Interpreter')
     qmlRegisterType(ScratchyApp, 'Scratchy', 1, 0, 'ScratchyApp')
+
 
     app = QApplication(sys.argv)
     engine = QQmlApplicationEngine()
@@ -127,5 +129,9 @@ if __name__ == "__main__":
         win = engine.rootObjects()[0]
         win.show()
         ret = app.exec_()
+
+    scratchyApp = engine.rootObjects()[0].findChildren(ScratchyApp)[0]
+    scratchyApp.destroy()
+
     pomp.looper.exitLoop()
     sys.exit(ret)
