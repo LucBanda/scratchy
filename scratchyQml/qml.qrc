@@ -1,11 +1,11 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>MainForm.ui.qml</file>
+        <file>MainForm.qml</file>
         <file>ProgramElementUI.qml</file>
         <file>DropTile.qml</file>
-        <file>DebugToolBar.qml</file>
-        <file>DebugToolBarForm.ui.qml</file>
-        <file>RobotForm.ui.qml</file>
+        <file>DebugToolBarForm.qml</file>
+        <file>RobotForm.qml</file>
+        <file>AlgorithmView.qml</file>
     </qresource>
 </RCC>

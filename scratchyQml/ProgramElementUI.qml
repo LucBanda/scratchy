@@ -1,5 +1,6 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.4
+import Scratchy 1.0
 
 Item {
     id: action
@@ -7,7 +8,7 @@ Item {
     height: 30 + childListRect.height + (programElement.instruction == "Répete"? 10:0)
     property alias childListView: childListView
     property var programElement
-    property alias value: value.text
+
     property int listIndex: -1
     property bool accepted: false
 
@@ -82,6 +83,7 @@ Item {
             TextInput {
                 id: value
                 text: programElement.value
+                onTextChanged: if (text) programElement.value = text
                 anchors.topMargin: 2
                 horizontalAlignment: Text.AlignHCenter
                 anchors.fill: parent

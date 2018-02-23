@@ -107,13 +107,12 @@ class RobotController(RobotItf, QObject):
         self.connected = False
 
     def onStateReceived(self, x, y, cap, vx, vy, vang):
-        self._x = x
-        self._y = y
-        self._cap = cap
-        self._vx = vx
-        self._vy = vy
-        self._vang = vang
-        self.statusChanged.emit()
+        self.xRobot = x
+        self.yRobot = y
+        self.capRobot = cap
+        self.vxRobot = vx
+        self.vyRobot = vy
+        self.vangRobot = vang
 
     def onInstructionReceived(self, instruction, value):
         newInst = ProgramElement(None)

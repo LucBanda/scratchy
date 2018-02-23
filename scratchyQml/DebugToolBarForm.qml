@@ -1,15 +1,18 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.4
+import Scratchy 1.0
 
 Item {
     id: debugToolBar
+    property RobotController robotController
+    property Interpreter interpreter
+
     width: 300
     height: 50
-    property alias playButton: playButton
 
     Rectangle {
         id: rectangle
-        visible: true
+        visible: parent.visible
         gradient: Gradient {
             GradientStop {
                 position: 0
@@ -37,6 +40,7 @@ Item {
                 id: playButton
                 visible: parent.visible
                 anchors.fill: parent
+                onClicked: interpreter.start()
 
                 Image {
                     id: image

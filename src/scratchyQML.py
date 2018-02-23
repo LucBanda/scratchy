@@ -119,9 +119,7 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
     engine = QQmlApplicationEngine()
-    scratchy = ScratchyApp(engine)
 
-    engine.rootContext().setContextProperty('scratchyApp', scratchy)
     engine.load('./scratchyQml/main.qml')
     ret = 0
 
@@ -129,6 +127,5 @@ if __name__ == "__main__":
         win = engine.rootObjects()[0]
         win.show()
         ret = app.exec_()
-    scratchy.destroy()
     pomp.looper.exitLoop()
     sys.exit(ret)

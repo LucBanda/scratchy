@@ -1,23 +1,16 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
+import Scratchy 1.0
 
 Item {
     id: item1
+    property ScratchyApp scratchyApp
+    property RobotController robotController
+    property alias debugTextField: debugTextField
+
     width: 1024
     height: 800
-    property alias robotPlayground: robotPlayground
-    property alias robotY: robot.y
-    property alias robotX: robot.x
-    property alias robot: robot
-    property alias debugToolBar: debugToolBar
-    property alias algorithmDropTile: algorithmDropTile
-    property alias defaultLoop: defaultLoop
-    property alias defaultTourne: defaultTourne
-    property alias defaultAvance: defaultAvance
-    property alias debugTextField: debugTextField
-    property alias actionGroupBox: actionGroupBox
-    property alias playButton: debugToolBar.playButton
 
     GroupBox {
         id: actionGroupBox
@@ -43,7 +36,7 @@ Item {
             anchors.top: parent.top
             anchors.topMargin: 5
             programElement: Item {
-                property string instruction:"Avance"
+                property string instruction: "Avance"
                 property string value: "1"
                 property bool executing: false
             }
@@ -56,7 +49,7 @@ Item {
             anchors.top: defaultAvance.bottom
             anchors.topMargin: 15
             programElement: Item {
-                property string instruction:"Tourne"
+                property string instruction: "Tourne"
                 property string value: "90"
                 property bool executing: false
             }
@@ -69,7 +62,7 @@ Item {
             anchors.top: defaultTourne.bottom
             anchors.topMargin: 15
             programElement: Item {
-                property string instruction:"Répete"
+                property string instruction: "Répete"
                 property string value: "2"
                 property bool executing: false
             }
@@ -82,7 +75,7 @@ Item {
         radius: 10
         border.color: "#3be97e"
         border.width: 1
-        anchors.right: algorithmDropTile.left
+        anchors.right: algorithmView.left
         anchors.rightMargin: 0
         anchors.top: videoFrame.bottom
         anchors.topMargin: 0
@@ -93,10 +86,9 @@ Item {
 
         RobotForm {
             id: robot
-            x: 180
-            y: 228
-            width: 30
-            height: 30
+            robotController: scratchyApp.robotController
+            origX: robotPlayground.width/2
+            origY: robotPlayground.height/2
         }
     }
 
@@ -111,11 +103,10 @@ Item {
         anchors.leftMargin: 0
     }
 
-
     Rectangle {
         id: rectangle
         y: 622
-        width: algorithmDropTile.width
+        width: algorithmView.width
         height: 200
         color: "#f0f0ff"
         border.color: "#4819d4"
@@ -128,14 +119,15 @@ Item {
 
         Text {
             id: debugTextField
+            width: algorithmView.width
             text: qsTr("")
             anchors.fill: parent
             font.pixelSize: 12
         }
     }
-    DropTile {
-        id: algorithmDropTile
-        color: "#fffcee"
+    AlgorithmView {
+        id: algorithmView
+        algorithm: scratchyApp.algorithm
         anchors.bottom: rectangle.top
         anchors.bottomMargin: 0
         anchors.left: actionGroupBox.right
@@ -147,11 +139,13 @@ Item {
 
         DebugToolBarForm {
             id: debugToolBar
+            robotController: scratchyApp.robotController
+            interpreter: scratchyApp.interpreter
             x: 51
             y: 510
             width: 300
             height: 50
-            visible: false
+            visible: robotController.connected
             anchors.right: parent.right
             anchors.rightMargin: 30
             anchors.bottom: parent.bottom

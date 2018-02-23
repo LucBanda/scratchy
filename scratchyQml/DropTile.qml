@@ -6,7 +6,6 @@ DropArea {
     property alias dropProxy: dragTarget
     property alias color: dropRectangle.color
     signal droppedProxy(var element, int x, int y)
-    width: 64; height: 64
 
     onDropped: {
         if (!dragTarget.drag.source.accepted) {
