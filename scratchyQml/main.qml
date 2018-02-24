@@ -11,6 +11,7 @@ ApplicationWindow {
 
     ScratchyApp {
         id: scratchyApp
+        objectName: 'scratchyApp'
     }
 
     FileDialog {
@@ -66,7 +67,7 @@ ApplicationWindow {
     }
 
     Connections {
-        target: scratchyApp.interpreter
+        target: scratchyApp.scratchyDebugger
 
         onStopped: {
             mainForm.print_debug("STOP")

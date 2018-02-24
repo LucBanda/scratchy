@@ -5,52 +5,88 @@ import Scratchy 1.0
 Item {
     id: debugToolBar
     property RobotController robotController
-    property Interpreter interpreter
+    property Debugger scratchyDebugger
 
-    width: 300
+    width: 250
     height: 50
 
     Rectangle {
         id: rectangle
+        color: "#bad9e5"
+        radius: 20
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.rightMargin: 0
         visible: parent.visible
-        gradient: Gradient {
-            GradientStop {
-                position: 0
-                color: "#c5e25d"
-            }
 
-            GradientStop {
-                position: 1
-                color: "#4d5d14"
-            }
-        }
-        anchors.fill: parent
-
-        Rectangle {
-            id: rectangle1
-            x: 30
-            width: 50
-            height: 50
-            color: "#9a9f37"
-            visible: parent.visible
-            anchors.top: parent.top
-            anchors.topMargin: 0
-
+        Image {
+            id: play
+            y: 8
+            width: 35
+            height: 35
+            anchors.left: parent.left
+            anchors.leftMargin: 20
+            anchors.verticalCenter: parent.verticalCenter
+            source: "play.png"
             MouseArea {
                 id: playButton
                 visible: parent.visible
                 anchors.fill: parent
-                onClicked: interpreter.start()
+                onClicked: scratchyDebugger.start()
+            }
+        }
 
-                Image {
-                    id: image
-                    width: 30
-                    height: 30
-                    visible: parent.visible
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.verticalCenter: parent.verticalCenter
-                    source: "Play_groen.png"
-                }
+        Image {
+            id: pause
+            y: 7
+            width: 35
+            height: 35
+            anchors.left: step.right
+            anchors.leftMargin: 20
+            anchors.verticalCenter: parent.verticalCenter
+            source: "pause.png"
+            MouseArea {
+                id: pauseButton
+                visible: parent.visible
+                anchors.fill: parent
+                onClicked: scratchyDebugger.pause = true
+            }
+        }
+
+        Image {
+            id: stop
+            y: 8
+            width: 35
+            height: 35
+            anchors.left: pause.right
+            anchors.leftMargin: 20
+            anchors.verticalCenter: parent.verticalCenter
+            source: "stop.png"
+            MouseArea {
+                id: stopButton
+                visible: parent.visible
+                anchors.fill: parent
+                onClicked: scratchyDebugger.stop()
+            }
+        }
+
+        Image {
+            id: step
+            x: 76
+            y: 7
+            width: 35
+            height: 35
+            anchors.left: play.right
+            anchors.leftMargin: 20
+            anchors.verticalCenter: parent.verticalCenter
+            source: "step.png"
+            MouseArea {
+                id: stepButton
+                visible: parent.visible
+                anchors.fill: parent
+                onClicked: scratchyDebugger.step()
             }
         }
     }

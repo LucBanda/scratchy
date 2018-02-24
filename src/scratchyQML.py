@@ -7,7 +7,7 @@ from PyQt5.QtCore import QObject, pyqtProperty, pyqtSlot, pyqtSignal
 from PyQt5.QtQml import qmlRegisterType, QQmlApplicationEngine
 from PyQt5.QtWidgets import QApplication
 from RobotModel import RobotController
-from Interpreter import Interpreter
+from Interpreter import Debugger
 
 # FIXME
 sys.path.append("./libpomp/python")
@@ -32,7 +32,7 @@ class QtPompLoop(_Loop, QObject):
 
 class ScratchyApp(QObject):
     algorithmChanged = pyqtSignal()
-    interpreterChanged = pyqtSignal()
+    scratchyDebuggerChanged = pyqtSignal()
     robotControllerChanged = pyqtSignal()
 
     def __init__(self, context, parent=None):
@@ -45,16 +45,8 @@ class ScratchyApp(QObject):
         self._algorithm = Algorithm(parent)
         self.filename = None
         self._robotController = RobotController(self)
-        self._interpreter = Interpreter(self, self._algorithm._elementList, self._robotController)
-        self._robotController.client = self._interpreter
-
-    def finishedExecutionList(self):
-        print ("END")
-        self._interpreter.stopped.emit()
-
-    def onInstructionDone(self, pc, instruction, value):
-        print("instruction OK received from Robot :", pc, instruction, value)
-        self.instructionDone.emit(pc, instruction, value)
+        self._debugger = Debugger(self, self._robotController)
+        self._debugger.load(self._algorithm)
 
     @pyqtSlot(str)
     def save(self, fileName):
@@ -78,14 +70,14 @@ class ScratchyApp(QObject):
         self._robotController = value
         self.robotControllerChanged.emit()
 
-    @pyqtProperty(Interpreter, notify=interpreterChanged)
-    def interpreter(self):
-        return self._interpreter
+    @pyqtProperty(Debugger, notify=scratchyDebuggerChanged)
+    def scratchyDebugger(self):
+        return self._debugger
 
-    @interpreter.setter
-    def interpreter(self, value):
-        self._interpreter = value
-        self.interpreterChanged.emit()
+    @scratchyDebugger.setter
+    def scratchyDebugger(self, value):
+        self._debugger = value
+        self.scratchyDebuggerChanged.emit()
 
     @pyqtProperty(Algorithm, notify=algorithmChanged)
     def algorithm(self):
@@ -94,6 +86,7 @@ class ScratchyApp(QObject):
     @algorithm.setter
     def algorithm(self, value):
         self._algorithm = value
+        self._debugger.load(self._algorithm)
         self.algorithmChanged.emit()
 
 
@@ -105,7 +98,6 @@ class ScratchyApp(QObject):
     def clear(self):
         self._algorithm.clear()
         self._interpreter = Interpreter(self, self._algorithm._elementList, self._robotController)
-        self._robotController.client = self._interpreter
 
     @pyqtSlot()
     def destroy(self):
@@ -115,7 +107,7 @@ if __name__ == "__main__":
     qmlRegisterType(ProgramElement, 'Scratchy', 1, 0, 'ProgramElement')
     qmlRegisterType(Algorithm, 'Scratchy', 1, 0, 'Algorithm')
     qmlRegisterType(RobotController, 'Scratchy', 1, 0, 'RobotController')
-    qmlRegisterType(Interpreter, 'Scratchy', 1, 0, 'Interpreter')
+    qmlRegisterType(Debugger, 'Scratchy', 1, 0, 'Debugger')
     qmlRegisterType(ScratchyApp, 'Scratchy', 1, 0, 'ScratchyApp')
 
 

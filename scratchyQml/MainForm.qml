@@ -140,11 +140,9 @@ Item {
         DebugToolBarForm {
             id: debugToolBar
             robotController: scratchyApp.robotController
-            interpreter: scratchyApp.interpreter
+            scratchyDebugger: scratchyApp.scratchyDebugger
             x: 51
             y: 510
-            width: 300
-            height: 50
             visible: robotController.connected
             anchors.right: parent.right
             anchors.rightMargin: 30
