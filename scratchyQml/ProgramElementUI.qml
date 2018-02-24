@@ -106,8 +106,7 @@ Item {
         ListView {
             id:childListView
             anchors.fill:parent
-            height:count > 0 ? contentItem.childrenRect.height : 0
-
+            height: contentHeight
         }
     }
 

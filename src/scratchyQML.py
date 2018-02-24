@@ -97,7 +97,7 @@ class ScratchyApp(QObject):
     @pyqtSlot()
     def clear(self):
         self._algorithm.clear()
-        self._interpreter = Interpreter(self, self._algorithm._elementList, self._robotController)
+        self._debugger.load(self._algorithm)
 
     @pyqtSlot()
     def destroy(self):

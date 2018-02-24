@@ -39,6 +39,8 @@ class Debugger(QObject):
     @stop.setter
     def stop(self, value):
         self._stop = value
+        if self._stop:
+            self.cpu.load(self.algorithm._elementList)
         self.stopChanged.emit()
 
     @pyqtSlot()
@@ -50,6 +52,9 @@ class Debugger(QObject):
 
     @pyqtSlot()
     def step(self):
+        self.pause = True
+        self.play = False
+        self.stop = False
         self.cpu.execute()
 
     def onInstructionDone(self, instruction):
@@ -120,4 +125,4 @@ class CPU:
             else:
                 # everything finished
                 self.client.onProgramDone()
-        self.client.onInstructionDone(self.executionList[self.pc])
+        self.client.onInstructionDone(self.executionList[self.pc-1])

@@ -35,10 +35,10 @@ Item {
             id: algorithmView
             x: 0
             y: 0
-            onCountChanged: height = contentItem.childrenRect.height
             spacing: -2
             //model:fakeModel
             model: algorithm.elementList
+            height: contentHeight
             onModelChanged: {
                 if (algorithm.elementList.length > 0) {
                     algorithmView.x = scratchyApp.algorithm.x

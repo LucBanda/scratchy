@@ -68,7 +68,7 @@ Item {
                 id: stopButton
                 visible: parent.visible
                 anchors.fill: parent
-                onClicked: scratchyDebugger.stop()
+                onClicked: scratchyDebugger.stop = true
             }
         }
 
