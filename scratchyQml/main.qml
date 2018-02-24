@@ -66,17 +66,6 @@ ApplicationWindow {
         }
     }
 
-    Connections {
-        target: scratchyApp.scratchyDebugger
-
-        onStopped: {
-            mainForm.print_debug("STOP")
-        }
-        onInstructionDone: {
-            mainForm.print_debug("fini : " + pc + " " + instruction + " " + value)
-        }
-    }
-
     MainForm {
         id: mainForm
         scratchyApp: scratchyApp

@@ -32,9 +32,17 @@ Item {
             source: "play.png"
             MouseArea {
                 id: playButton
-                visible: parent.visible
+                visible: !shaderPlay.visible
                 anchors.fill: parent
                 onClicked: scratchyDebugger.start()
+            }
+
+            Rectangle {
+                id: shaderPlay
+                color: "#66ffffff"
+                radius: 18
+                visible: false
+                anchors.fill: parent
             }
         }
 
@@ -49,9 +57,17 @@ Item {
             source: "pause.png"
             MouseArea {
                 id: pauseButton
-                visible: parent.visible
+                visible: !shaderPause.visible
                 anchors.fill: parent
-                onClicked: scratchyDebugger.pause = true
+                onClicked: scratchyDebugger.pause()
+            }
+
+            Rectangle {
+                id: shaderPause
+                color: "#66ffffff"
+                radius: 18
+                visible: false
+                anchors.fill: parent
             }
         }
 
@@ -66,9 +82,19 @@ Item {
             source: "stop.png"
             MouseArea {
                 id: stopButton
-                visible: parent.visible
+                visible: !shaderStop.visible
                 anchors.fill: parent
-                onClicked: scratchyDebugger.stop = true
+                onClicked: scratchyDebugger.stop()
+            }
+
+            Rectangle {
+                id: shaderStop
+                x: 2
+                y: -9
+                color: "#66ffffff"
+                radius: 18
+                anchors.fill: parent
+                visible: false
             }
         }
 
@@ -84,10 +110,118 @@ Item {
             source: "step.png"
             MouseArea {
                 id: stepButton
-                visible: parent.visible
+                visible: !shaderStep.visible
                 anchors.fill: parent
                 onClicked: scratchyDebugger.step()
             }
+
+            Rectangle {
+                id: shaderStep
+                x: 9
+                y: 2
+                color: "#66ffffff"
+                radius: 18
+                anchors.fill: parent
+                visible: false
+            }
         }
     }
+    states: [
+        State {
+            name: "pending"
+            when: scratchyDebugger.pending
+
+            PropertyChanges {
+                target: shaderPlay
+                visible: true
+            }
+
+            PropertyChanges {
+                target: shaderPause
+                visible: false
+            }
+
+            PropertyChanges {
+                target: shaderStop
+                visible: true
+            }
+
+            PropertyChanges {
+                target: shaderStep
+                visible: true
+            }
+
+            PropertyChanges {
+                target: playButton
+                visible: !shaderPlay.visible
+            }
+
+            PropertyChanges {
+                target: pauseButton
+                visible: !shaderPause.visible
+            }
+        },
+        State {
+            name: "playing"
+            when: scratchyDebugger.play && !scratchyDebugger.pending
+
+            PropertyChanges {
+                target: shaderPlay
+                visible: true
+            }
+
+            PropertyChanges {
+                target: shaderPause
+                visible: false
+            }
+
+            PropertyChanges {
+                target: shaderStop
+                visible: false
+            }
+
+            PropertyChanges {
+                target: shaderStep
+                visible: true
+            }
+        },
+        State {
+            name: "paused"
+            when: scratchyDebugger.paused && !scratchyDebugger.pending
+
+            PropertyChanges {
+                target: shaderPlay
+                visible: false
+            }
+
+            PropertyChanges {
+                target: shaderPause
+                visible: true
+            }
+
+            PropertyChanges {
+                target: shaderStop
+                visible: false
+            }
+
+            PropertyChanges {
+                target: shaderStep
+                visible: false
+            }
+        },
+        State {
+            name: "Stopped"
+            when: scratchyDebugger.stopped && !scratchyDebugger.pending
+
+            PropertyChanges {
+                target: shaderPause
+                visible: true
+            }
+
+            PropertyChanges {
+                target: shaderStop
+                visible: true
+            }
+        }
+    ]
 }

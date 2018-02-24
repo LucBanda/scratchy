@@ -2,28 +2,38 @@ from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, pyqtProperty
 
 
 class Debugger(QObject):
-    stopChanged = pyqtSignal()
-    pauseChanged = pyqtSignal()
+    stoppedChanged = pyqtSignal()
+    pausedChanged = pyqtSignal()
     playChanged = pyqtSignal()
+    pendingChanged = pyqtSignal()
 
     def __init__(self, parent, robotController):
         super(Debugger, self).__init__(parent)
-        self._pause = False
-        self._stop = True
+        self._paused = False
+        self._stopped = True
         self._play = False
+        self._pending = False
         self.cpu = CPU(self, robotController)
 
     def load(self, algorithm):
         self.algorithm = algorithm
         self.cpu.load(algorithm._elementList)
 
-    @pyqtProperty(bool, notify=pauseChanged)
-    def pause(self):
-        return self._pause
-    @pause.setter
-    def pause(self, value):
-        self._pause = value
-        self.pauseChanged.emit()
+    @pyqtProperty(bool, notify=pendingChanged)
+    def pending(self):
+        return self._pending
+    @pending.setter
+    def pending(self, value):
+        self._pending = value
+        self.pendingChanged.emit()
+
+    @pyqtProperty(bool, notify=pausedChanged)
+    def paused(self):
+        return self._paused
+    @paused.setter
+    def paused(self, value):
+        self._paused = value
+        self.pausedChanged.emit()
 
     @pyqtProperty(bool, notify=playChanged)
     def play(self):
@@ -33,42 +43,55 @@ class Debugger(QObject):
         self._play = value
         self.playChanged.emit()
 
-    @pyqtProperty(bool, notify=stopChanged)
-    def stop(self):
-        return self._stop
-    @stop.setter
-    def stop(self, value):
-        self._stop = value
-        if self._stop:
-            self.cpu.load(self.algorithm._elementList)
-        self.stopChanged.emit()
+    @pyqtProperty(bool, notify=stoppedChanged)
+    def stopped(self):
+        return self._stopped
+    @stopped.setter
+    def stopped(self, value):
+        self._stopped = value
+        self.stoppedChanged.emit()
 
     @pyqtSlot()
     def start(self):
         self.play = True
-        self.stop = False
-        self.pause = False
+        self.stopped = False
+        self.paused = False
         self.cpu.execute()
+        self.pending = True
 
     @pyqtSlot()
     def step(self):
-        self.pause = True
+        self.paused = True
         self.play = False
-        self.stop = False
+        self.stopped = False
         self.cpu.execute()
+        self.pending = True
+
+    @pyqtSlot()
+    def stop(self):
+        self.stopped = True
+        self.play = False
+        self.paused = False
+
+    @pyqtSlot()
+    def pause(self):
+        self.stopped = False
+        self.play = False
+        self.paused = True
 
     def onInstructionDone(self, instruction):
-        if (self.pause):
+        self.pending = False
+        if (self.paused):
             return
-        if (self.stop):
+        if (self.stopped):
             self.cpu.load(self.algorithm._elementList)
             return
         if self.play:
             self.cpu.execute()
 
     def onProgramDone(self):
-        self.stop = True
-        self.pause = False
+        self.stopped = True
+        self.paused = False
         self.play = False
         self.cpu.load(self.algorithm._elementList)
 
