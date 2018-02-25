@@ -8,9 +8,8 @@ Item {
         id:recursableDelegate
         ProgramElementUI {
             id:programElementUi
-            property int programElementIndex: index
-            programElement: model
-            listIndex: programElementIndex
+            programElement: model.context
+            listIndex: index
 
             onAddAfter: { model.context.addAfter(index, element.programElement.instruction, element.programElement.value, x, y) }
             onAddInside: { model.context.addElementAtIndex(0, element.programElement.instruction, element.programElement.value, x, y) }

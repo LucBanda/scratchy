@@ -8,6 +8,7 @@ class ProgramElement(QObject):
     valueChanged = pyqtSignal()
     executingChanged = pyqtSignal()
     childsChanged = pyqtSignal()
+    contextChanged = pyqtSignal()
 
     def __init__(self, parent):
         QObject.__init__(self, parent)
@@ -17,18 +18,21 @@ class ProgramElement(QObject):
         self._childs = []
         self._executing = False
 
-    @pyqtProperty(QObject)
+    @pyqtProperty(QObject, notify=contextChanged)
     def context(self):
         return self
 
     @pyqtProperty(str, notify=instructionChanged)
     def instruction(self):
         return self._instruction
+    @instruction.setter
+    def instruction(self, value):
+        self._instruction = value
+        self.instructionChanged.emit()
 
     @pyqtProperty(float, notify=valueChanged)
     def value(self):
         return self._value
-
     @value.setter
     def value(self, value):
         if value != "" and not math.isnan(value):

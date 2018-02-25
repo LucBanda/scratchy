@@ -7,7 +7,7 @@ Item {
     width: 90
     height: 30 + childListRect.height + (programElement.instruction == "Répete"? 10:0)
     property alias childListView: childListView
-    property var programElement
+    property ProgramElement programElement
 
     property int listIndex: -1
     property bool accepted: false
@@ -39,6 +39,11 @@ Item {
         anchors.rightMargin: 35
         anchors.fill: parent
         drag.target:action
+        onPressed: {
+
+            parent.grabToImage(function(result) {
+                parent.Drag.imageSource = result.url
+        })}
     }
 
     Rectangle {

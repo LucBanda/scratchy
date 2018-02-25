@@ -35,10 +35,10 @@ Item {
             anchors.leftMargin: 2
             anchors.top: parent.top
             anchors.topMargin: 5
-            programElement: Item {
-                property string instruction: "Avance"
-                property string value: "1"
-                property bool executing: false
+            programElement: ProgramElement {
+                instruction: "Avance"
+                value: 1
+                executing: false
             }
         }
 
@@ -48,10 +48,10 @@ Item {
             anchors.leftMargin: 2
             anchors.top: defaultAvance.bottom
             anchors.topMargin: 15
-            programElement: Item {
-                property string instruction: "Tourne"
-                property string value: "90"
-                property bool executing: false
+            programElement: ProgramElement {
+                instruction: "Tourne"
+                value: 90
+                executing: false
             }
         }
 
@@ -61,10 +61,10 @@ Item {
             anchors.leftMargin: 2
             anchors.top: defaultTourne.bottom
             anchors.topMargin: 15
-            programElement: Item {
-                property string instruction: "Répete"
-                property string value: "2"
-                property bool executing: false
+            programElement: ProgramElement {
+                instruction: "Répete"
+                value: 2
+                executing: false
             }
         }
     }
