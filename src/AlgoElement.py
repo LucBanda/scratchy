@@ -69,14 +69,18 @@ def newElement(parent, inst, value):
     element.value = float(value)
     return element
 
-class Algorithm(QObject):
+class Function(QObject):
     elementListChanged = pyqtSignal()
+    nameChanged = pyqtSignal()
+    xChanged = pyqtSignal()
+    yChanged = pyqtSignal()
 
     def __init__(self, parent):
         QObject.__init__(self, parent)
         self._elementList = []
         self._x = 0
         self._y = 0
+        self._name = ""
 
     def dump(self):
         string = ""
@@ -104,13 +108,30 @@ class Algorithm(QObject):
                 self._elementList.append(newElement)
                 self.elementListChanged.emit()
 
-    @pyqtProperty(int)
+    @pyqtProperty(str, notify= nameChanged)
+    def name(self):
+        return self._name
+    @name.setter
+    def name(self, value):
+        self._name = value
+        self.nameChanged.emit()
+
+    @pyqtProperty(int, notify=xChanged)
     def x(self):
         return self._x
+    @x.setter
+    def x(self, value):
+        self._x = value
+        self.xChanged.emit()
 
-    @pyqtProperty(int)
+
+    @pyqtProperty(int, notify=yChanged)
     def y(self):
         return self._y
+    @y.setter
+    def y(self, value):
+        self._y=value
+        self.yChanged.emit()
 
     @pyqtSlot()
     def clear(self):
@@ -119,23 +140,14 @@ class Algorithm(QObject):
 
     @pyqtSlot(str, str, int, int)
     def addElement(self, inst, value, x, y):
-        self._x = x
-        self._y = y
+        self.x = x
+        self.y = y
         self.addElementAtIndex(0, inst, value)
 
     def addElementAtIndex(self, index, inst, value):
         element = newElement(self, inst, value)
         self._elementList.insert(index, element)
         self.elementListChanged.emit()
-
-    @ pyqtSlot(int, str, str, int, int)
-    def updateElement(self, index, inst, value, x, y):
-        self._elementList[index]._instruction = inst
-        self._elementList[index]._value = float(value)
-        self._x = x
-        self._y = y
-        self.elementListChanged.emit()
-
 
     @pyqtProperty(QQmlListProperty, notify=elementListChanged)
     def elementList(self):
@@ -144,4 +156,42 @@ class Algorithm(QObject):
     @elementList.setter
     def elementList(self, value):
         self._elementList = value
+        self.elementListChanged.emit()
+
+
+class Algorithm(QObject):
+    functionListChanged = pyqtSignal()
+
+    def __init__(self, parent):
+        QObject.__init__(self, parent)
+        self._functionList = []
+
+    @pyqtProperty(QQmlListProperty, notify=functionListChanged)
+    def functionList(self):
+        return QQmlListProperty(Function, self, self._functionList)
+
+    @functionList.setter
+    def functionList(self, value):
+        self._functionList = value
+        self.functionListChanged.emit()
+
+    @pyqtSlot(str, str, float, int, int)
+    def addElementToFunction(self, name, inst, value, x, y):
+        for function in self._functionList:
+            if (function.name == name):
+                function.addElement(inst, value, x, y)
+                return
+        newFunction = Function(self)
+        newFunction.name = name
+        newFunction.addElement(inst, value, x, y)
+        self._functionList.append(newFunction)
+        self.functionListChanged.emit()
+
+
+    @ pyqtSlot(int, str, str, int, int)
+    def updateElement(self, index, inst, value, x, y):
+        self._elementList[index]._instruction = inst
+        self._elementList[index]._value = float(value)
+        self.x = x
+        self.y = y
         self.elementListChanged.emit()

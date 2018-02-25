@@ -17,7 +17,6 @@ Item {
 
     Drag.active: mouseArea.drag.active
     Drag.dragType: Drag.Automatic
-    Drag.keys: ["defaut"]
 
     DropArea {
         id: targetArea

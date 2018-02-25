@@ -17,7 +17,7 @@ class Debugger(QObject):
 
     def load(self, algorithm):
         self.algorithm = algorithm
-        self.cpu.load(algorithm._elementList)
+        self.cpu.load(algorithm)
 
     @pyqtProperty(bool, notify=pendingChanged)
     def pending(self):
@@ -56,6 +56,8 @@ class Debugger(QObject):
         self.play = True
         self.stopped = False
         self.paused = False
+        #load main function
+        self.cpu.load(self.algorithm.functionList[0])
         self.cpu.execute()
         self.pending = True
 

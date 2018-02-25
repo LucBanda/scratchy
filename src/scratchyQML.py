@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from AlgoElement import ProgramElement, Algorithm
+from AlgoElement import ProgramElement, Function, Algorithm
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSlot, pyqtSignal
 from PyQt5.QtQml import qmlRegisterType, QQmlApplicationEngine
 from PyQt5.QtWidgets import QApplication
@@ -106,6 +106,7 @@ class ScratchyApp(QObject):
 if __name__ == "__main__":
     qmlRegisterType(ProgramElement, 'Scratchy', 1, 0, 'ProgramElement')
     qmlRegisterType(Algorithm, 'Scratchy', 1, 0, 'Algorithm')
+    qmlRegisterType(Function, 'Scratchy', 1, 0, 'Function')
     qmlRegisterType(RobotController, 'Scratchy', 1, 0, 'RobotController')
     qmlRegisterType(Debugger, 'Scratchy', 1, 0, 'Debugger')
     qmlRegisterType(ScratchyApp, 'Scratchy', 1, 0, 'ScratchyApp')

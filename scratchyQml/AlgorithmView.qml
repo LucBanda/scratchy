@@ -17,6 +17,7 @@ Item {
             childListView.delegate: recursableDelegate
         }
     }
+
     DropTile {
         id: algorithmDropTile
         color: "#fffcee"
@@ -24,27 +25,29 @@ Item {
 
         onDroppedProxy: {
             if (element.listIndex === -1) {
-                algorithm.addElement(element.programElement.instruction, element.programElement.value, x, y)
+                if (algorithm.functionList.length > 0) {
+                    algorithm.addElementToFunction("func"+algorithm.functionList.length, element.programElement.instruction, element.programElement.value, x, y)
+                } else {
+                    algorithm.addElementToFunction("main", element.programElement.instruction, element.programElement.value, x, y)
+                }
             } else {
-                algorithm.updateElement(element.listIndex, element.programElement.instruction, element.programElement.value, x, y)
+                algorithm.updateFunction(element.listIndex, element.programElement.instruction, element.programElement.value, x, y)
             }
         }
 
-        ListView {
+        Repeater{
             id: algorithmView
-            x: 0
-            y: 0
-            spacing: -2
-            //model:fakeModel
-            model: algorithm.elementList
-            height: contentHeight
-            onModelChanged: {
-                if (algorithm.elementList.length > 0) {
-                    algorithmView.x = scratchyApp.algorithm.x
-                    algorithmView.y = scratchyApp.algorithm.y
-                }
+            model: algorithm.functionList
+
+            ListView {
+                id:functionView
+                x: modelData.x
+                y: modelData.y
+                spacing: -2
+                model: elementList
+                height: contentHeight
+                delegate: recursableDelegate
             }
-            delegate: recursableDelegate
         }
     }
 }
